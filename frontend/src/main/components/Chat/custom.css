@@ -1,0 +1,19 @@
+.userbar {
+    width: 250px;
+}
+
+.welcome-screen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .welcome-text {
+    margin-bottom: 20px;
+  }
+  
+  .welcome-image {
+    height: 300px; /* Ajusta el tamaño de la imagen según tus preferencias */
+    width: 300px; /* Ajusta el tamaño de la imagen según tus preferencias */
+  }

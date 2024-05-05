@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+
+  apib2c:
+    container_name: apib2c
+    image: acralphamilk.azurecr.io/apib2c:latest
+    build:
+      context: ./api
+      dockerfile: dockerfile
+    env_file:
+      - ./api/.env
+    ports:
+      - 5000:8910
+    volumes:
+      - ./api:/app
