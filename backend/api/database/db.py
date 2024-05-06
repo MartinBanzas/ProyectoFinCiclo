@@ -17,7 +17,6 @@ if mockup:
     sqlite_url = f"sqlite:///{sqlite_file_name}"
     connect_args = {"check_same_thread": False}
     engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
-
 else:
     user_name = os.environ.get('username')
     password = os.environ.get('password')
