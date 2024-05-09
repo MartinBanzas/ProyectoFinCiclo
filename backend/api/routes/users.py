@@ -21,56 +21,52 @@ description = """
 Obtains all users.
 """
 
-@router.post("/auth/loginUser",
-            description="Autentica al usuario y genera un token",
-             response_model=schemaUser)
+@router.post("/login", description="Autentica al usuario y genera un token", response_model=str)
 async def authenticate_user(
-        user_login_form: schemaUserLoginForm,
-        db: Session = Depends(get_session_context)
-):
-    #
-    user_db = db.query(User).filter(User.email==user_login_form.username).first()  #Busca el usuario por email.
+    user_login_form: schemaUserLoginForm,
+    db: Session = Depends(get_session_context)
+) -> str:
+    user_db = db.query(User).filter(User.email == user_login_form.username).first()
 
     if not user_db:
-           raise HTTPException(status_code=404, detail="No se ha encontrado el email")
+        raise HTTPException(status_code=404, detail="No se ha encontrado el email")
 
     if verify_password(user_login_form.password, user_db.password):
-        data_for_token = {"id":user_db.id, "username": user_db.email, }
+        data_for_token = {"id": user_db.id, "username": user_db.email, "nombre":user_db.nombre}
         token = create_token(data=data_for_token)
-        print(token)
-        return user_db
+        
+        return  token 
     else:
         raise HTTPException(status_code=403, detail="Usuario o contraseña no coinciden")
-       
 
 
-@router.get("/auth/get_users",
+@router.get("/get_users",
             description="Obtiene todos los usuarios de la BD",
             response_model=list[schemaUser])
 async def get_users(
         db: Session = Depends(get_session_context)
-):
+) -> dict:
     users = db.query(User).all()
     if not users:
         raise HTTPException(status_code=404, detail="No hay datos en la tabla")
     return users
 
 #Busca un usuario pasando un id
-@router.get("/auth/get_users_by_id/{id}",
+@router.get("/get_users_by_id/{id}",
             description="Busca un usuario pasando un ID",
             response_model=list[schemaUser])
 async def get_users(
         id:int,
         request: Request,
         db: Session = Depends(get_session_context)
-):
+) -> dict:
     user = db.query(User).filter(User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="No hay datos en la tabla")
     return user
 
 
-#Maximum of 5 requests/min for an IP address
+#5 solicitudes/min máximo por dirección ip.
 limiter = Limiter(key_func=get_remote_address)
 
 @limiter.limit("5/minute")
@@ -98,7 +94,7 @@ async def update_user(
     return user_db
 
 
-@router.post("/auth/addUser", response_model=schemaUserInsert, description='Crea un usuario en la BD')
+@router.post("/addUser", response_model=schemaUserInsert, description='Crea un usuario en la BD')
 async def addUser(user_insert: schemaUserInsert,
                   db: Session = Depends(get_session_context)):
 
@@ -124,12 +120,27 @@ async def addUser(user_insert: schemaUserInsert,
         )
 
 
-@router.patch("/tetris/highScore", response_model=schemaUserInsert, description='Adds user to DB.')
+@router.patch("/tetris/highScore", response_model=schemaUserTetrisHighScore, description='Adds user to DB.')
 async def addUser(tetris_score: schemaUserTetrisHighScore,
                   db: Session = Depends(get_session_context)):
+    
     user_db = db.query(User).filter(User.nombre == tetris_score.nombre).first()
     user_db.puntuacion=tetris_score.puntuacion
     db.add(user_db)
     db.commit()
     db.refresh(user_db)
     return user_db
+
+
+@router.delete("/delete_user/{id}", description='Borra un usuario en la BD. Solo para propósitos de dev.')
+async def addUser(id:int,
+                  db: Session = Depends(get_session_context)):
+
+    user_db=db.query(User).filter(User.id==id).first()
+    db.delete(user_db)
+    db.commit()
+
+    return ORJSONResponse(
+            status_code=200,
+            content={'mensaje':f'¡Usuario borrado correctamente!'}
+        )

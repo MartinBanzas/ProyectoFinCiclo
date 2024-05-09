@@ -20,6 +20,7 @@ export const FilesTable = () => {
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
   const [filesUpdated, setFilesUpdated] = useState(false);
 
+  //Ordena archivos por fecha
   const sortByDate = () => {
     const sortedFicheros = [...ficheros];
     sortedFicheros.sort((a, b) => {
@@ -30,6 +31,7 @@ export const FilesTable = () => {
     setFicheros(sortedFicheros);
   };
 
+  //Ordena archivos por tamaño
   const sortBySize = () => {
     const sortedFicheros = [...ficheros];
     sortedFicheros.sort((a, b) => {
@@ -39,6 +41,7 @@ export const FilesTable = () => {
     setFicheros(sortedFicheros);
   };
   
+//Ordena archivos por nombre
   const sortByName = () => {
     const sortedFicheros = [...ficheros];
     sortedFicheros.sort((a, b) => {
@@ -119,7 +122,6 @@ export const FilesTable = () => {
       const loadedFiles: FileModel[] = [];
 
       for (const key in responseJson) {
-        console.log(responseJson[key].type)
         loadedFiles.push({
           id: responseJson[key].id,
           description: responseJson[key].description,

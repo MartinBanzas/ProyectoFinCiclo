@@ -75,46 +75,12 @@ async def upload_file(
         newFile.type=mime_type
         db.add(newFile)
         db.commit()
-        return ORJSONResponse(content={"filename": file.filename, "saved_path": file_path})
+        return ORJSONResponse(content={"filename": file.filename, "saved_path": file.path})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error subiendo el archivo: {str(e)}")
 
 
-#Avatares Queda por hacer cuando se vuelve a subir un avatar
-#Debería borrar el viejo
-@router.post("/drive/avatar",
-            description="Subre el avatar del usuario y lo anota en la tabla User",
-            response_model=schemaUser)
-async def upload_avatar(
-        file: UploadFile,
-        id: int,
-        db: Session = Depends(get_session_context)
-):
-    try:
-        user_db = db.query(User).filter(User.id == id).first()
-        # Busca si el usuario ya tiene avatar, en caso afirmativo borra el archivo antes de subir el nuevo.
-        if user_db.avatar:
-            old_avatar = os.path.join(UPLOAD_DIR, user_db.avatar)
-            os.remove(old_avatar)
 
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await file.read())
-
-        # Verifica que se trata de una imagen
-        image_type = imghdr.what(file_path)
-        if not image_type:
-            os.remove(file_path)  # Deletes if not img
-            raise HTTPException(status_code=400, detail="El archivo no es una imagen")
-
-        # Inserta la ruta en la tabla User
-        user_db.avatar = file.filename
-        db.add(user_db)
-        db.commit()
-        return user_db
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error subiendo el archivo: {str(e)}")
 
 @router.patch("/drive/rename/{id}", description="Renombra un fichero y actualiza el registro")
 async def rename_file(

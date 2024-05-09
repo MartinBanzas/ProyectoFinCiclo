@@ -11,11 +11,9 @@ import logging
 # Routes usuarios y seguridad
 from utils.azure_config import router as security_router
 # Routes libros y películas
-from routes.libros import router as libros_router
-from routes.peliculasSeries import router as peliculasSeries_router
-from routes.librosQuery import router as esdla_router
 from routes.users import router as user_list
 from routes.files import router as file_list
+from routes.avatar import router as avatar_router
 from utils.azure_config import azure_settings
 
 
@@ -104,3 +102,4 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 app.include_router(user_list)
 app.include_router(security_router)
 app.include_router(file_list)
+app.include_router(avatar_router)

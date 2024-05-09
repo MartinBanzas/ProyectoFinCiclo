@@ -1,13 +1,11 @@
 import { useCallback, useEffect } from "react";
-import profilePic from "../../../assets/img/avatar2.jpg";
-import { fetchResults } from "../../utils/UserDataRest";
+import { get_all_users } from "../../utils/UserDataRest";
 import UserModel from "../../../models/UserModel";
 import React from "react";
 import { getNombre, userId } from "../Login/TokenHandler";
 import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "../../utils/FirebaseConfig";
 import { SpinnerLoading } from "../../utils/SpinnerLoading";
-import avatar from "../../../assets/img/avatar2.jpg";
 import { ChatModal } from "./Modals/ChatModal";
 import { EditModal } from "./Modals/EditModal";
 import { AvatarModal } from "./Modals/AvatarModal";
@@ -39,7 +37,7 @@ export const Profile = () => {
     async (newEmail: string, newBio: string, newPhone: number) => {
       try {
         const formData = new URL(
-          `http://localhost:8080/auth/updateUserData/${userId}`
+          `http://localhost:5000/auth/updateUserData/${userId}`
         );
         formData.searchParams.append("newEmail", newEmail);
         formData.searchParams.append("newBio", newBio);
@@ -62,25 +60,25 @@ export const Profile = () => {
     []
   );
 
-  const handleImgUpload = useCallback(
-    async (file: File | null) => {
+  const handleAvatarUpload = useCallback(
+    async (file: File ) => {
       if (!file) {
         console.error("No se ha seleccionado ningún archivo");
         return;
       }
-
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("id", userId);
-
       try {
-        const response = await fetch("http://localhost:8080/drive/avatar", {
+        console.log(userId)
+        const response = await fetch(`http://localhost:5000/drive/avatar/${userId}`, 
+        {
           method: "POST",
           body: formData,
         });
         console.log(response);
         if (response.ok) {
           console.log("Archivo subido exitosamente");
+          setAvatarModal(false)
         } else {
           console.error("Error al subir el archivo");
         }
@@ -125,7 +123,7 @@ export const Profile = () => {
       : currentlastMsg.body;
   };
 
-  //useEffects para obtener mensajes, filtrarlos, obtener los avatares...
+  //useEffects para obtener mensajes, filtrarlos...desde Firebase.
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "tarjetas", "mensajes"), (doc) => {
       if (doc.exists()) {
@@ -144,26 +142,22 @@ export const Profile = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchResults();
-
-      const mainUser = result.find((user) => user.nombre === getNombre);
-      const otherUsers = result.filter((user) => user.nombre !== getNombre);
+    const fetchUserData = async () => {
+      const all_users = await get_all_users();
+      const mainUser = all_users.find((user) => user.nombre === getNombre);
+      const otherUsers = all_users.filter((user) => user.nombre !== getNombre);
       setOtherUsers(otherUsers);
       if (mainUser) {
         setMainUser(mainUser);
       }
     };
-
-    fetchData();
+    fetchUserData();
   }, []);
 
   const fetchImage = async (id: Number) => {
-    console.log(userId);
-    console.log(id);
     try {
       const response = await fetch(
-        `http://localhost:8080/drive/get/avatar/${id}`,
+        `http://localhost:5000/drive/get/avatar/${id}`,
         {
           method: "GET",
         }
@@ -175,7 +169,6 @@ export const Profile = () => {
         }
         return URL.createObjectURL(blob);
       } else {
-        console.log(response);
         console.error("Error al obtener la imagen");
       }
     } catch (error) {
@@ -183,29 +176,8 @@ export const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchImageMain = async (id: Number) => {
-      console.log(userId);
-      try {
-        const response = await fetch(
-          `http://localhost:8080/drive/get/avatar/${id}`,
-          {
-            method: "GET",
-          }
-        );
-        if (response.ok) {
-          const blob = await response.blob();
-          setImageUrl(URL.createObjectURL(blob));
-          return URL.createObjectURL(blob);
-        } else {
-          console.log(response);
-          console.error("Error al obtener la imagen");
-        }
-      } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
-      }
-    }
-    fetchImageMain(userId);
+  useEffect(() => { 
+    fetchImage(userId);
   }, []);
 
   useEffect(() => {
@@ -215,6 +187,7 @@ export const Profile = () => {
         try {
           const url = await fetchImage(user.id);
           if (url) {
+
             // Verificar si la URL no es undefined
             urls[user.id] = url;
           } else {
@@ -545,7 +518,7 @@ export const Profile = () => {
       <AvatarModal
         setAvatarModal={setAvatarModal}
         avatarModal={avatarModal}
-        handleImgUpload={handleImgUpload}
+        handleImgUpload={handleAvatarUpload}
       />
       <EditModal
         setEditModal={setEditModal}

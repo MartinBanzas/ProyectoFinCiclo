@@ -13,18 +13,16 @@ const TokenHandler = () => {
     const payloadJson = atob(payloadBase64);
     const payload = JSON.parse(payloadJson);
 
-  
+ 
     //Fecha caducidad
     const expirationTimestamp = payload.exp;
-   
-    const expirationDate = new Date(expirationTimestamp * 1000);
 
     //username
     const roles=payload.roles;
     const nombre = payload.nombre;
     const userId=payload.id;
 
-    return { valid: expirationDate.getTime() > Date.now(), nombre: nombre, role:roles, userId:userId };
+    return { valid: expirationTimestamp > Date.now(), nombre: nombre, role:roles, userId:userId };
 }
 
 export const { valid: isTokenValid, nombre: getNombre, role:roles, userId:userId } = TokenHandler();

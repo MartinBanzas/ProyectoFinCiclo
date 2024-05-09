@@ -24,7 +24,7 @@ export const Login = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:8080/auth/loginUser", {
+            const response = await fetch("http://localhost:5000/login", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,13 +33,16 @@ export const Login = () => {
             });
 
             if (response.ok) {
+                
                 const responseBody = await response.text();
+                console.log(responseBody)
                 localStorage.setItem('token', responseBody);
                 window.location.href = "http://localhost:3000/home";
             } else {
 
                 console.log(response);
                 console.error("Fracaso en el logeo");
+                console.log(localStorage.getItem('token'));
             }
         } catch (error) {
             console.error("Error en la solicitud", error);

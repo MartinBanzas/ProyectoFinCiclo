@@ -11,7 +11,7 @@ import { useGameStatus } from "../Hooks/useGameStatus";
 import { Music } from "../Music";
 import { Leaderboard } from "./Leaderboard/Leaderboard";
 import { useState } from "react";
-import { fetchResults } from "../../../utils/UserDataRest";
+import { get_all_users } from "../../../utils/UserDataRest";
 import UserModel from "../../../../models/UserModel";
 import { handleNewMaximumScore } from "./Leaderboard/NewMaximumScore";
 
@@ -35,7 +35,7 @@ export const Main: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        const result = await fetchResults();
+        const result = await get_all_users();
         setPlayerList(result);
     };
 

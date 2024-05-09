@@ -1,20 +1,21 @@
 import UserModel from "../../models/UserModel";
 
 
-export const fetchResults = async () => {
-    const baseUrl: string = "http://localhost:8080/api/users";
-    const url: string = `${baseUrl}`;
+export const get_all_users = async () => {
+    const baseUrl: string = "http://localhost:5000/get_users";
     const bioDefault="Este es un espacio en el que nos cuentes un poco acerca de ti mismo. No seas tímido y permite que tus compañeros te conozcan";
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(baseUrl);
+        
+        const responseJson = await response.json()
 
         if (!response.ok) {
             throw new Error('Algo ha ido mal');
         }
 
-        const responseJson = await response.json();
-        const responseData = responseJson._embedded.users;
+        
+        const responseData = responseJson;
         const users: UserModel[] = [];
 
         for (const key in responseData) {

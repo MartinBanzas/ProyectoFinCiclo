@@ -23,78 +23,29 @@ import { Profile } from './main/components/Profile/Profile';
 
 
 const handleLogin: any = () => {
-
   return (
-    <Switch>
-      <div className='App Site bg-gray-200 '>
-        
+    <div className='App Site bg-gray-200'>
+      <Switch>
         <Route path='/' exact>
           <Redirect to='/login' />
         </Route>
+
         <Route path='/login' exact>
           <Login />
           <Footer />
         </Route>
-
-        <Route path='/trello'>
-          <SideBar />
-          <ListContainer />
-        </Route>
-
-        <Route path='/conversor'>
-          <SideBar />
-          <Board />
-        </Route>
-
+        
         <Route path='/register'>
           <Register />
         </Route>
 
-        <Route path='/home'>
-          <SideBar />
-          <FilesTable />
+        {/* Ruta comodín que coincidirá con cualquier ruta que no coincida con las anteriores */}
+        <Route>
+          <Error />
         </Route>
-
-        <Route path='/calendar'>
-          <SideBar />
-          <CalendarMain />
-        </Route>
-      
-      <Route path='/profile'>
-        <SideBar/>
-        <Profile/>
-       </Route>
-
-       <Route path='/tetris'>
-          <SideBar />
-          <Main />
-        </Route>
-
-      
-
-        <Route path='/login'>
-          <Login />
-        </Route>
-
-        <Route path='/messages'>
-         <SideBar/>
-          <ChatWindow/>
-        </Route>
-
-        <Route path='/about'>
-        <SideBar/>
-        <About/>
-       </Route>
-
-       <Route path='/weather'>
-        <SideBar/>
-        <Weather/>
-       </Route>
-    
-       <Footer/>
-      </div>
-    
-    </Switch>
+      </Switch>
+      <Footer />
+    </div>
   )
 }
 
@@ -169,8 +120,6 @@ const global: any = () => {
         </Route>
 
       
-
-
       </Switch>
       <Footer />
     </div>

@@ -18,7 +18,7 @@ export const AvatarModal: React.FC<AvatarModalProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     setSelectedFile(file);
-  };
+};
 
   const handleButton = () => {
     if (selectedFile) {

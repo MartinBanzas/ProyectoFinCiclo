@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserModel from "../../../models/UserModel";
-import { fetchResults } from "../../utils/UserDataRest";
+import { get_all_users } from "../../utils/UserDataRest";
 import { getNombre } from "../Login/TokenHandler";
 import { Link } from "react-router-dom";
 import './custom.css'
@@ -16,7 +16,7 @@ export const UsersBar: React.FC <UserProps> = ({toggleUser}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await fetchResults();
+        const result = await get_all_users();
         setUsers(result);
       } catch (error) {
         console.error("Error al obtener datos:", error);

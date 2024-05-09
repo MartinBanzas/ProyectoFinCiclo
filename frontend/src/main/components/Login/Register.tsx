@@ -46,7 +46,7 @@ export const Register = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/auth/addUser", {
+      const response = await fetch("http://localhost:5000/addUser", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
