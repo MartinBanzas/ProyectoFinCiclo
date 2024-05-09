@@ -11,12 +11,8 @@
 # production
 /build
 /frontend/src/assets/music
-/frontend/src/assets/img
-/frontend/src/assets/icons
-/frontend/src/assets/css/material-dashboard.css
-/frontend/src/assets/css/material-dashboard.min.css
-/frontend/src/assets/css/nucleo-icons.css
-/frontend/src/assets/scss
+
+
 
 # misc
 .DS_Store
