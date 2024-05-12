@@ -34,24 +34,38 @@ export const Profile = () => {
   }>({});
 
   const updateUser = useCallback(
-    async (newEmail: string, newBio: string, newPhone: number) => {
+    async (
+      inputBio: string,
+      inputPhone: number,
+      inputTwitter: string,
+      inputFacebook: string,
+      inputInstagram: string
+    ) => {
       try {
-        const formData = new URL(
-          `http://localhost:5000/auth/updateUserData/${userId}`
+        const bodyData = {
+          newFacebook: inputFacebook  ? inputFacebook : mainUser?.facebook,
+          newTwitter: inputTwitter  ? inputTwitter : mainUser?.twitter,
+          newInstagram: inputInstagram  ? inputInstagram: mainUser?.instagram,
+          newPhone: inputPhone  ? inputPhone: mainUser?.movil,
+          newBio: inputBio ? inputBio: mainUser?.bio,
+        };
+        
+        console.log(inputPhone)
+      
+        const response = await fetch(
+          `http://localhost:5000/auth/updateUserData/${userId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(bodyData),
+          }
         );
-        formData.searchParams.append("newEmail", newEmail);
-        formData.searchParams.append("newBio", newBio);
-        formData.searchParams.append("newPhone", String(newPhone));
-
-        const response = await fetch(formData.toString(), {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
 
         if (response.ok) {
           const responseBody = await response.text();
+          console.log(responseBody)
         }
       } catch (error) {
         console.log("Error actualizando el recurso");
@@ -61,7 +75,7 @@ export const Profile = () => {
   );
 
   const handleAvatarUpload = useCallback(
-    async (file: File ) => {
+    async (file: File) => {
       if (!file) {
         console.error("No se ha seleccionado ningún archivo");
         return;
@@ -69,16 +83,18 @@ export const Profile = () => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        console.log(userId)
-        const response = await fetch(`http://localhost:5000/drive/avatar/${userId}`, 
-        {
-          method: "POST",
-          body: formData,
-        });
+        console.log(userId);
+        const response = await fetch(
+          `http://localhost:5000/drive/avatar/${userId}`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         console.log(response);
         if (response.ok) {
           console.log("Archivo subido exitosamente");
-          setAvatarModal(false)
+          setAvatarModal(false);
         } else {
           console.error("Error al subir el archivo");
         }
@@ -145,6 +161,7 @@ export const Profile = () => {
     const fetchUserData = async () => {
       const all_users = await get_all_users();
       const mainUser = all_users.find((user) => user.nombre === getNombre);
+      console.log(mainUser);
       const otherUsers = all_users.filter((user) => user.nombre !== getNombre);
       setOtherUsers(otherUsers);
       if (mainUser) {
@@ -176,7 +193,7 @@ export const Profile = () => {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchImage(userId);
   }, []);
 
@@ -187,7 +204,6 @@ export const Profile = () => {
         try {
           const url = await fetchImage(user.id);
           if (url) {
-
             // Verificar si la URL no es undefined
             urls[user.id] = url;
           } else {
@@ -443,13 +459,13 @@ export const Profile = () => {
                       &nbsp;
                       <a
                         className="btn btn-facebook btn-simple mb-0 ps-1 pe-2 py-0"
-                        href={`https://www.twitter.com/${mainUser?.twitter}`}
+                        href={`https://www.twitter.com/${mainUser?.facebook}`}
                       >
                         <i className="fab fa-facebook fa-lg" />
                       </a>
                       <a
                         className="btn btn-twitter btn-simple mb-0 ps-1 pe-2 py-0"
-                        href={`https://www.facebook.com/${mainUser?.facebook}`}
+                        href={`https://www.twitter.com/${mainUser?.twitter}`}
                       >
                         <i className="fab fa-twitter fa-lg" />
                       </a>
@@ -486,7 +502,7 @@ export const Profile = () => {
                             }
                             alt="kal"
                             className="border-radius-lg shadow"
-                            width={"10px"} 
+                            width={"10px"}
                           />
                         </div>
                         <div className="d-flex align-items-start flex-column justify-content-center w-75">
@@ -497,6 +513,9 @@ export const Profile = () => {
                             receiver={user.nombre}
                             showModal={chatModal}
                             msgList={msgFromThisUser}
+                            avatarSender={imageUrl}
+                            avatarReceiver={userImageUrls[user.id]}
+                           
                           />
                         </div>
 
@@ -524,6 +543,7 @@ export const Profile = () => {
         setEditModal={setEditModal}
         editModal={editModal}
         updateUser={updateUser}
+        mainUser={mainUser}
       />
     </div>
   ) : (

@@ -48,6 +48,13 @@ class schemaUser(SQLModel):
     bio: Optional[str] = None
     avatar: Optional[str] = None
 
+#Schema para actualizar la info de perfil de los usuarios.
+class schemaUpdateUserData(SQLModel):
+    newBio: Optional[str] = None
+    newPhone: Optional[int] = None
+    newTwitter:Optional[str] = None
+    newFacebook:Optional[str] = None
+    newInstagram:Optional[str] = None
 
 #Schema para crear nuevos usuarios
 class schemaUserInsert(SQLModel):
@@ -55,11 +62,12 @@ class schemaUserInsert(SQLModel):
     nombre: str
     password: str
 
+#Schema para formulario de login
 class schemaUserLoginForm(SQLModel):
     username: str
     password: str
 
-#Schema para los récord de Tetris
+#Schema para actualizar los récord de Tetris
 class schemaUserTetrisHighScore(SQLModel):
     nombre: str
     puntuacion: int

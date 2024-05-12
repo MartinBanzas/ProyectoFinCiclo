@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Security, Request
 from fastapi.responses import ORJSONResponse, Response
 from database.db import get_session_context
 from sqlalchemy.orm import Session
-from models.json_schemas import schemaUser, schemaUserInsert, schemaUserTetrisHighScore, schemaUserLoginForm
+from models.json_schemas import schemaUpdateUserData, schemaUser, schemaUserInsert, schemaUserTetrisHighScore, schemaUserLoginForm
 from models.database_models import User
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -32,7 +32,7 @@ async def authenticate_user(
         raise HTTPException(status_code=404, detail="No se ha encontrado el email")
 
     if verify_password(user_login_form.password, user_db.password):
-        data_for_token = {"id": user_db.id, "username": user_db.email, "nombre":user_db.nombre}
+        data_for_token = {"id": user_db.id, "username": user_db.email, "nombre":user_db.nombre, "roles":user_db.roles}
         token = create_token(data=data_for_token)
         
         return  token 
@@ -54,7 +54,7 @@ async def get_users(
 #Busca un usuario pasando un id
 @router.get("/get_users_by_id/{id}",
             description="Busca un usuario pasando un ID",
-            response_model=list[schemaUser])
+            response_model=schemaUser)
 async def get_users(
         id:int,
         request: Request,
@@ -70,28 +70,34 @@ async def get_users(
 limiter = Limiter(key_func=get_remote_address)
 
 @limiter.limit("5/minute")
-@router.patch("/auth/updateUserData/{id}", response_model=schemaUser,
-              description='Actualiza un usuario pasando un ID')
+@router.patch("/auth/updateUserData/{id}", response_model=schemaUser, description='Actualiza un usuario pasando un ID')
 async def update_user(
         request: Request,
         id: int,
-        newPhone: int,
-        newBio: str,
-        newEmail: str,
+        new_user_data: schemaUpdateUserData,
         db: Session = Depends(get_session_context)):
 
     user_db = db.query(User).filter(User.id == id).first()
     if not user_db:
         raise HTTPException(status_code=404, detail="No se ha encontrado al usuario")
 
-    user_db.phone = newPhone
-    user_db.email = newEmail
-    user_db.bio = newBio
+    # Verificar que cada campo no esté vacío antes de actualizarlo
+    if new_user_data.newPhone is not None:
+        user_db.movil = new_user_data.newPhone
+    if new_user_data.newBio is not None:
+        user_db.bio = new_user_data.newBio
+    if new_user_data.newFacebook is not None:
+        user_db.facebook = new_user_data.newFacebook
+    if new_user_data.newInstagram is not None:
+        user_db.instagram = new_user_data.newInstagram
+    if new_user_data.newTwitter is not None:
+        user_db.twitter = new_user_data.newTwitter
 
     db.add(user_db)
     db.commit()
     db.refresh(user_db)
     return user_db
+
 
 
 @router.post("/addUser", response_model=schemaUserInsert, description='Crea un usuario en la BD')

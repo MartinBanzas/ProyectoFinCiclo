@@ -22,7 +22,7 @@ const TokenHandler = () => {
     const nombre = payload.nombre;
     const userId=payload.id;
 
-    return { valid: expirationTimestamp > Date.now(), nombre: nombre, role:roles, userId:userId };
+    return { valid: expirationTimestamp > Date.now(), nombre: nombre, roles:roles, userId:userId };
 }
 
-export const { valid: isTokenValid, nombre: getNombre, role:roles, userId:userId } = TokenHandler();
+export const { valid: isTokenValid, nombre: getNombre, roles:roles, userId:userId } = TokenHandler();

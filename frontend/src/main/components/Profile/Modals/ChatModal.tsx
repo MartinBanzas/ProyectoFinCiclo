@@ -5,12 +5,15 @@ import { nanoid } from "nanoid";
 import { setDoc, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { getNombre } from "../../Login/TokenHandler";
 import { db } from "../../../utils/FirebaseConfig";
+import unknown from "../../../../assets/icons/User_icon.png";
 
 interface ChatModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   showModal: boolean;
   msgList: Message[];
   receiver: string;
+  avatarSender: string;
+  avatarReceiver: string;
 }
 
 export const ChatModal: React.FC<ChatModalProps> = ({
@@ -18,6 +21,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   setShowModal,
   msgList,
   receiver,
+  avatarSender,
+  avatarReceiver,
 }) => {
   const [inputText, setInputText] = React.useState("");
 
@@ -45,7 +50,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           element.sender === receiver ||
           (element.sender === getNombre && element.receiver === receiver)
       );
-      
 
       // Limpia el texto de entrada
       setInputText("");
@@ -54,10 +58,9 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     }
   };
 
-
   const formatDateTime = (timestamp: any) => {
     const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
+      weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -69,6 +72,11 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
     return new Date(timestamp).toLocaleDateString("es-ES", options);
   };
+ //Examina que los avatares que se le pasan están definidos, en caso contrario, coge el por defecto.
+  avatarReceiver
+    ? (avatarReceiver = avatarReceiver)
+    : (avatarReceiver = unknown);
+  avatarSender ? (avatarSender = avatarSender) : (avatarSender = unknown);
 
   return (
     <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -79,28 +87,38 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         {msgList.map((message) => (
           <div key={message.key} className="card mt-3">
             <div
-              className={`card-header ${
+              className={`card-header h-25 ${
                 getNombre === message.sender ? "bg-secondary" : "bg-primary"
               } text-white`}
             >
               {getNombre === message.receiver
-                ? `${message.sender} escribió el ` + formatDateTime(message.date)
-                : 'El '+ formatDateTime(message.date)+ ' escribiste...'}
+                ? `${message.sender} escribió el ` +
+                  formatDateTime(message.date)
+                : "El " + formatDateTime(message.date) + " escribiste..."}
+              <div>
+                <img
+                  src={
+                    getNombre === message.sender ? avatarSender : avatarReceiver
+                  }
+                  alt="kal"
+                  className="border-radius-lg shadow"
+                  width={"50px"}
+                />
+              </div>
             </div>
             <div className="card-body">
               <p className="card-text">{message.body}</p>
             </div>
           </div>
         ))}
-     
+
         <input
-        id="messageBody"
+          id="messageBody"
           className="mt-2"
           type="text"
           placeholder="Escribe aquí..."
           onChange={(event) => setInputText(event.target.value)}
         />
-          
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => setShowModal(false)}>

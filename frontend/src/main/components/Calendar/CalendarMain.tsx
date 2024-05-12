@@ -46,7 +46,7 @@ export const CalendarMain = () => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [eventsToShow, setEventsToShow] = useState<EventList[]>();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [showAddEvent, setShowAddEvent] = useState(false);
+  const [showModalAdd, setShowModalAdd] = useState(false);
   const [newDate, setNewDate] = useState<DateSelectArg>();
   const [newEvent, setNewEvent] = useState("");
   const [fireBaseEvents, setFireBaseEvents] = useState<EventList[]>();
@@ -73,6 +73,7 @@ export const CalendarMain = () => {
       if (doc.exists()) {
         const data = doc.data().lists;
         setFireBaseEvents(data);
+        //Muestra tus eventos y los de las personas con rol admin
         const filteredData = data.filter(
           (event: any) =>
             event.creator == getNombre || event.userRoles == "ADMIN_ROLE"
@@ -107,41 +108,9 @@ export const CalendarMain = () => {
     saveEventsToFirestore();
   }, [fireBaseEvents]);
 
-  const handleEventResize = (arg: EventResizeDoneArg) => {
-    const { event, oldEvent } = arg;
-  
-    if (fireBaseEvents) {
-      const updatedEvents = fireBaseEvents.map((fbEvent) => {
-        if (fbEvent.id === event.id) {
-          // Asegurarse de que event.start y event.end no sean null
-          const rangeStart = event.start || new Date();
-          const rangeEnd = event.end || new Date();
-  
-          // Si el ID del evento coincide con el evento redimensionado, actualiza la propiedad range
-          return {
-            ...fbEvent,
-            range: { start: rangeStart, end: rangeEnd }
-          };
-        } else {
-          // Si el ID no coincide, no se modifica este evento
-          return fbEvent;
-        }
-      });
-  
-      saveToFirebase(updatedEvents);
-      // Filtrar los elementos null de updatedEvents
-      const filteredEvents = updatedEvents.filter((event) => event !== null);
-  
-      // Establecer el estado fireBaseEvents
-      setFireBaseEvents(filteredEvents);
-    }
-  
-    console.log("Evento redimensionado:", event.start, event.end);
-    console.log("Fecha :", oldEvent.end, oldEvent.start);
-    console.log("Fecha de fin:");
-  };
-
+ 
   const handleNewEvent = () => {
+    console.log(roles)
     if (newDate) {
       const newEventList: EventList = {
         date: newDate.startStr || "",
@@ -161,7 +130,7 @@ export const CalendarMain = () => {
         const global = [...fireBaseEvents, newEventList];
         setFireBaseEvents(global);
         setEventsToShow(list);
-        setShowAddEvent(false);
+        setShowModalAdd(false);
       }
     }
   };
@@ -173,7 +142,7 @@ export const CalendarMain = () => {
         initialView="dayGridMonth"
         locale={esLocale}
         aspectRatio={2}
-        dateClick={(arg: { dateStr: any }) => setShowAddEvent(true)}
+        dateClick={(arg: { dateStr: any }) => setShowModalAdd(true)}
         editable={true}
         selectable={true}
         events={eventsToShow?.map((event) => ({
@@ -185,7 +154,6 @@ export const CalendarMain = () => {
         }))}
         select={(arg: DateSelectArg) => setNewDate(arg)}
         eventClick={handleEventClick}
-        eventResize={(arg: EventResizeDoneArg) => handleEventResize(arg)}
         headerToolbar={{
           left: "prev,next today",
           center: "title",
@@ -200,9 +168,9 @@ export const CalendarMain = () => {
         setShowDeleteConfirmation={setShowDeleteConfirmation}
       />
       <ModalAdd
-        showAddEvent={showAddEvent}
+        showAddEvent={showModalAdd}
         handleNewEvent={handleNewEvent}
-        setShowAddEvent={setShowAddEvent}
+        setShowAddEvent={setShowModalAdd}
         setNewEvent={setNewEvent}
       />
     </div>
