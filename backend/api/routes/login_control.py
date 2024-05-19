@@ -1,3 +1,5 @@
+from collections import defaultdict
+from typing import Dict, List
 from fastapi import APIRouter, Depends, HTTPException, Security, Request
 from fastapi.responses import ORJSONResponse, Response
 from datetime import date, datetime, timedelta
@@ -29,7 +31,7 @@ async def inicio_sesion(
         login = db.query(LoginControl).filter(LoginControl.user_id == user_db.id, LoginControl.day == today).first()
         
         if login:
-            raise HTTPException(status_code=400, detail="Ya iniciaste sesión")
+            raise HTTPException(status_code=403, detail="Ya iniciaste sesión")
         else:
             new_login = LoginControl()
             new_login.day = today
@@ -39,39 +41,40 @@ async def inicio_sesion(
             db.commit()
         return f"Te has logeado correctamente el {today} a las {now.strftime('%H:%M:%S')}"
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error logéandote {e}")
+        raise HTTPException(status_code=403, detail=f"Error logéandote {e}")
 
 
 
-@router.get("/get_all_logs", description="Obtiene todos los registros de login", response_model=list[schemaLoginList])
+@router.get("/get_all_logs", description="Obtiene todos los registros de login", response_model=Dict[str, List[schemaLoginList]])
 async def get_all_logs(
     db: Session = Depends(get_session_context)
 ):
     try:
-       
-        #Es una query en la que queremos sacar el nombre de la persona así que hay que hacer Join
+        #Cargamos la relación
         full_login_list = db.query(LoginControl).options(joinedload(LoginControl.user)).all()
-        
         if not full_login_list:
             raise HTTPException(status_code=404, detail="No se encontraron registros de login")
-        result = [
-            schemaLoginList(
-                id=login.id,
-                user_id=login.user_id,
-                day=login.day,
-                inicio_sesion=login.inicio_sesion,
-                fin_sesion=login.fin_sesion,
-                sesion_ok=login.sesion_ok,
-                user_name=login.user.nombre
+        
+        #Creamos un diccionario
+        result = defaultdict(list)
+
+        # Agrupamos los resultados por el nombre del usuario.
+        for login in full_login_list:
+            result[login.user.nombre].append(
+                schemaLoginList(
+                    id=login.id,
+                    user_id=login.user_id,
+                    day=login.day,
+                    inicio_sesion=login.inicio_sesion,
+                    fin_sesion=login.fin_sesion,
+                    sesion_ok=login.sesion_ok
+                )
             )
-            for login in full_login_list
-        ]
 
         return result
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error {e}")
-
 
 
 @router.get("/get_logs_by_user/{user_id}", description="Obtiene los registros de cada usuario original de login", response_model=list[schemaLoginList])
@@ -83,8 +86,23 @@ async def get_logs_by_user(
         user_login_list=db.query(LoginControl).filter(LoginControl.user_id==user_id).all()
         if not user_login_list:
           raise HTTPException(status_code=404, detail="Usuario y login inicial no encontrado")
-        return user_login_list
+        
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error {e}")
+    
+@router.get("/get_logs_today/{user_id}", description="Obtiene si el usuario ya se ha logeado en el día de hoy", response_model=str)
+async def get_logs_by_user(
+    user_id:int,
+    db:Session = Depends(get_session_context)
+):
+    today = date.today()
+    try:
+        login_today=db.query(LoginControl).filter(LoginControl.user_id==user_id, LoginControl.day==today).first()
+        if not login_today:
+            return ORJSONResponse(content={"msj": "No se ha logeado hoy"})
+        else: 
+            raise HTTPException(status_code=403, detail="Sesión ya iniciada")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error {e}")
     

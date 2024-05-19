@@ -68,7 +68,7 @@ class schemaLoginList(SQLModel):
     inicio_sesion: str
     fin_sesion: Optional[str]
     sesion_ok: Optional[bool]=false
-    user_name: str
+ 
 
    
 
