@@ -14,6 +14,7 @@ from utils.azure_config import router as security_router
 from routes.users import router as user_list
 from routes.files import router as file_list
 from routes.avatar import router as avatar_router
+from routes.login_control import router as login_router
 from utils.azure_config import azure_settings
 
 
@@ -103,3 +104,4 @@ app.include_router(user_list)
 app.include_router(security_router)
 app.include_router(file_list)
 app.include_router(avatar_router)
+app.include_router(login_router)

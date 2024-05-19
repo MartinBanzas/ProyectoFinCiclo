@@ -20,6 +20,7 @@ import { About } from './main/components/About';
 import { Weather } from './main/components/Weather/Weather';
 import {CalendarMain} from './main/components/Calendar/CalendarMain';
 import { Profile } from './main/components/Profile/Profile';
+import LoginListMain from './main/components/WorkHours/LoginListMain';
 
 
 const handleLogin: any = () => {
@@ -108,10 +109,14 @@ const global: any = () => {
         <Weather/>
        </Route>
 
-
        <Route path='/profile'>
         <SideBar/>
         <Profile/>
+       </Route>
+
+       <Route path='/loginList'>
+        <SideBar/>
+       <LoginListMain/>
        </Route>
 
 

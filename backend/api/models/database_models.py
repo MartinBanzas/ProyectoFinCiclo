@@ -4,38 +4,13 @@ Esquemas de sqlalchemy para definir las tablas de la base de datos e interactuar
 '''
 # Librerías
 from sqlalchemy import (
-    Column, Integer, String, 
+    Boolean, Column, ForeignKey, Integer, String, 
     Float, UniqueConstraint, Text, Date
 )
+from sqlalchemy.orm import relationship
 from database.db import Base
 
-#========== Libros de cada usuario
-class Libro(Base):
-    __tablename__ = 'Libro'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(255), nullable=False)
-    titulo = Column(String(255), nullable=False)
-    autor = Column(String(255), nullable=False)
-    genero = Column(String(255), nullable=False)
-    calificacion = Column(Float, nullable=True)
-    comentario = Column(String(255), nullable=True)
-
-    __table_args__ = (UniqueConstraint('username', 'titulo'),)
-
-#========== Películas y series de cada usuario
-class PeliculaSerie(Base):
-    __tablename__ = 'PeliculaSerie'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(255), nullable=False)
-    titulo = Column(String(255), nullable=False)
-    director = Column(String(255), nullable=False)
-    genero = Column(String(255), nullable=False)
-    calificacion = Column(Float, nullable=True)
-    comentario = Column(String(255), nullable=True)
-
-    __table_args__ = (UniqueConstraint('username', 'titulo'),)
 
 class User(Base):
     __tablename__= 'User'
@@ -52,6 +27,7 @@ class User(Base):
     instagram = Column(String(255), nullable=True)
     bio = Column(Text(255), nullable=True)
     avatar = Column(String(255), nullable=True)
+    login_controls = relationship("LoginControl", back_populates="user")
 
     __table_args__ = (UniqueConstraint('email', 'movil'),)
 
@@ -65,3 +41,15 @@ class File(Base):
     size = Column(Integer, nullable=False)
     date = Column(Date, nullable=False)
     type = Column(String(255), nullable=False)
+
+class LoginControl(Base):
+    __tablename__ = "LoginControl"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    day = Column(Date, nullable=False)
+    inicio_sesion = Column(String(255), nullable=False)
+    fin_sesion = Column(String(255), nullable=True)
+    sesion_ok = Column(Boolean, nullable=True)
+    user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
+    user = relationship("User", back_populates="login_controls")
+    #SQLite no soporta horas, solo Dates, hay que pasar las horas como string y construirlas
+    #como objetos Date en JavaScript en el front.

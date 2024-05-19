@@ -3,36 +3,10 @@
 Esquemas de SQLModel para definir los esquemas para interactuar con la base de datos (SQLModel)
 '''
 
+from sqlalchemy import false
 from sqlmodel import SQLModel
 from typing import List, Optional
 from datetime import date, datetime
-
-#======== Libros
-class schemaLibro(SQLModel):
-    username: str
-    titulo: str
-    autor: str
-    genero: str
-    calificacion: float | None = None
-    comentario: str | None = None
-
-
-#======== Películas y series
-class schemaPeliculaSerie(SQLModel):
-    username: str
-    titulo: str
-    director: str
-    genero: str
-    calificacion: float | None = None
-    comentario: str | None = None
-
-
-#======== Libros, peliculas y series
-
-class schemaLibroPeliculaSerie(SQLModel):
-    libros: List[schemaLibro]
-    peliculasseries: List[schemaPeliculaSerie]
-
 
 #Schema para obtención de todos los datos del usuario
 class schemaUser(SQLModel):
@@ -85,3 +59,16 @@ class schemaFiles(SQLModel):
 class TokenData(SQLModel):
     username: str | None = None
     id: int
+
+
+class schemaLoginList(SQLModel):
+    id: int
+    user_id: int
+    day: date
+    inicio_sesion: str
+    fin_sesion: Optional[str]
+    sesion_ok: Optional[bool]=false
+    user_name: str
+
+   
+
