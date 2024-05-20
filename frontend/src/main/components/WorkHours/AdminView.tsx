@@ -88,13 +88,13 @@ export const AdminView = () => {
               locale={esLocale}
               editable={false}
               selectable={false}
-              height={300} // Adjust height as needed
+              height={300} 
                
               events={userLogs.map(log => ({
-                color: log.sesion_ok ? "green" : "red", // Correctly set the color property
-                title: log.sesion_ok ? "OK" : "Not OK",
+                color: log.sesion_ok ? "green" : "red", 
+                title: log.sesion_ok ? "OK" : "Conflicto",
                 start: log.day,
-                end: log.day, // assuming each log represents a full day event
+                end: log.day, 
                 description: `Inicio: ${log.inicio_sesion}, Fin: ${log.fin_sesion}`
               }))}
             />

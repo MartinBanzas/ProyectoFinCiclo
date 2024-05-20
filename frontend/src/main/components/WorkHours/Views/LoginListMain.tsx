@@ -1,5 +1,5 @@
-import { roles } from "../Login/TokenHandler"
-import { AdminView } from "./AdminView"
+import { roles } from "../../Login/TokenHandler"
+import { AdminView } from "../AdminView"
 import { StandardView } from "./StandardView"
 
 const admin = () => {

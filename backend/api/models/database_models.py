@@ -48,6 +48,7 @@ class LoginControl(Base):
     day = Column(Date, nullable=False)
     inicio_sesion = Column(String(255), nullable=False)
     fin_sesion = Column(String(255), nullable=True)
+    sesion_finalizada = Column(Boolean, nullable=True)
     sesion_ok = Column(Boolean, nullable=True)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     user = relationship("User", back_populates="login_controls")

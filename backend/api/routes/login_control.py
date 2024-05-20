@@ -39,7 +39,7 @@ async def inicio_sesion(
             new_login.inicio_sesion = now.strftime("%H:%M:%S")  # Guardar solo la hora
             db.add(new_login)
             db.commit()
-        return f"Te has logeado correctamente el {today} a las {now.strftime('%H:%M:%S')}"
+        return ORJSONResponse(content={"logeado": f"{new_login.inicio_sesion}"})
     except Exception as e:
         raise HTTPException(status_code=403, detail=f"Error logéandote {e}")
 
@@ -84,12 +84,13 @@ async def get_logs_by_user(
 ):
     try:
         user_login_list=db.query(LoginControl).filter(LoginControl.user_id==user_id).all()
+       
         if not user_login_list:
           raise HTTPException(status_code=404, detail="Usuario y login inicial no encontrado")
-        
-
+        return user_login_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error {e}")
+  
     
 @router.get("/get_logs_today/{user_id}", description="Obtiene si el usuario ya se ha logeado en el día de hoy", response_model=str)
 async def get_logs_by_user(
@@ -101,8 +102,10 @@ async def get_logs_by_user(
         login_today=db.query(LoginControl).filter(LoginControl.user_id==user_id, LoginControl.day==today).first()
         if not login_today:
             return ORJSONResponse(content={"msj": "No se ha logeado hoy"})
-        else: 
-            raise HTTPException(status_code=403, detail="Sesión ya iniciada")
+        elif login_today.sesion_finalizada: 
+            return ORJSONResponse(content={"closed": f"{login_today.sesion_finalizada}"})
+        else:
+            return ORJSONResponse(content={"logeado": f"{login_today.inicio_sesion}"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error {e}")
     
@@ -128,6 +131,7 @@ async def end_log(
             inicio_sesion = datetime.strptime(login.inicio_sesion, "%H:%M:%S")
             fin_sesion_ = datetime.strptime(login.fin_sesion, "%H:%M:%S")
             time_difference = fin_sesion_ - inicio_sesion
+            login.sesion_finalizada=True
             if (time_difference > timedelta(hours=8)):
                 login.sesion_ok=True
             else:

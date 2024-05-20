@@ -112,7 +112,7 @@ return (
               <Link className="nav-link text-white " to="./loginList">
 
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i className="material-icons opacity-10">notifications</i>
+                  <i className="material-icons opacity-10">timer</i>
                 </div>
 
                 <span className="nav-link-text ms-1">Control horario</span>

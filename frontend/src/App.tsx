@@ -1,6 +1,5 @@
 
 import { SideBar } from './main/components/SideBar';
-import { NavBar } from './main/components/NavBar';
 import { Error } from './main/components/Error';
 import { FilesTable } from './main/components/Drive/FilesTable';
 import { Footer } from './main/components/Footer';
@@ -20,7 +19,7 @@ import { About } from './main/components/About';
 import { Weather } from './main/components/Weather/Weather';
 import {CalendarMain} from './main/components/Calendar/CalendarMain';
 import { Profile } from './main/components/Profile/Profile';
-import LoginListMain from './main/components/WorkHours/LoginListMain';
+import LoginListMain from './main/components/WorkHours/Views/LoginListMain';
 
 
 const handleLogin: any = () => {
