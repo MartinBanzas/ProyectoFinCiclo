@@ -1,6 +1,6 @@
 
 import React, { useCallback } from 'react'
-import logo from '../../assets/img/logo-ct.png'
+import logo from '../../../assets/img/logos/logo-empresa.png'
 import bg from '../../../assets/img/login-bg.jpg'
 
 export const Login = () => {
@@ -60,9 +60,10 @@ export const Login = () => {
                                 <div className="card z-index-0 fadeIn3 fadeInBottom">
                                     <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                         <div className="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                                            <h4 className="text-white font-weight-bolder text-center mt-2 mb-0">Iniciar sesión</h4>
-                                            <div className="row mt-3">
-                                                <div className="col-2 text-center ms-auto">
+                                           
+                                            <div className="row mt-3 h-100 navbar-brand-img ">
+                                                <img src={logo}></img>
+                                           {/*      <div className="col-2 text-center ms-auto">
                                                     <a className="btn btn-link px-3" href="javascript:;">
                                                         <i className="fa fa-facebook text-white text-lg"></i>
                                                     </a>
@@ -76,7 +77,7 @@ export const Login = () => {
                                                     <a className="btn btn-link px-3" href="javascript:;">
                                                         <i className="fa fa-google text-white text-lg"></i>
                                                     </a>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>

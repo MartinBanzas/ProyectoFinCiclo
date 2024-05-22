@@ -43,15 +43,15 @@ export const Profile = () => {
     ) => {
       try {
         const bodyData = {
-          newFacebook: inputFacebook  ? inputFacebook : mainUser?.facebook,
-          newTwitter: inputTwitter  ? inputTwitter : mainUser?.twitter,
-          newInstagram: inputInstagram  ? inputInstagram: mainUser?.instagram,
-          newPhone: inputPhone  ? inputPhone: mainUser?.movil,
-          newBio: inputBio ? inputBio: mainUser?.bio,
+          newFacebook: inputFacebook ? inputFacebook : mainUser?.facebook,
+          newTwitter: inputTwitter ? inputTwitter : mainUser?.twitter,
+          newInstagram: inputInstagram ? inputInstagram : mainUser?.instagram,
+          newPhone: inputPhone ? inputPhone : mainUser?.movil,
+          newBio: inputBio ? inputBio : mainUser?.bio,
         };
-        
-        console.log(inputPhone)
-      
+
+        console.log(inputPhone);
+
         const response = await fetch(
           `http://localhost:5000/auth/updateUserData/${userId}`,
           {
@@ -65,7 +65,7 @@ export const Profile = () => {
 
         if (response.ok) {
           const responseBody = await response.text();
-          console.log(responseBody)
+          console.log(responseBody);
         }
       } catch (error) {
         console.log("Error actualizando el recurso");
@@ -186,6 +186,7 @@ export const Profile = () => {
         }
         return URL.createObjectURL(blob);
       } else {
+        setImageUrl(unknown)
         console.error("Error al obtener la imagen");
       }
     } catch (error) {
@@ -237,7 +238,7 @@ export const Profile = () => {
           <div className="col-auto">
             <div className="avatar avatar-xl position-relative">
               <img
-                src={imageUrl}
+                src={imageUrl !=null ? imageUrl : unknown}
                 alt="Imagen de perfil del usuario"
                 className="w-100 border-radius-lg shadow-sm"
                 onDoubleClick={() => setAvatarModal(true)}
@@ -301,117 +302,71 @@ export const Profile = () => {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="row">
             <div className="col-12 col-xl-4">
               <div className="card card-plain h-100">
                 <div className="card-header pb-0 p-3">
-                  <h6 className="mb-0">Opciones de la plataforma</h6>
+                  <h6 className="mb-0">Información de perfil</h6>
                 </div>
                 <div className="card-body p-3">
                   <h6 className="text-uppercase text-body text-xs font-weight-bolder">
-                    Cuenta
+                    Redes sociales
                   </h6>
                   <ul className="list-group">
                     <li className="list-group-item border-0 px-0">
                       <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault"
-                          defaultChecked
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault"
+                        <a
+                          className="btn btn-twitter btn-simple mb-0 ps-1 pe-2 py-0"
+                          href={`https://www.twitter.com/${mainUser?.twitter}`}
                         >
-                          Tema oscuro
-                        </label>
+                          <i className="fab fa-twitter fa-xl fa-lg" />
+                        </a>
+                        {mainUser?.twitter != null
+                          ? mainUser.twitter
+                          : "Edita tu perfil para añadirlo"}
                       </div>
                     </li>
                     <li className="list-group-item border-0 px-0">
                       <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault1"
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault1"
+                        <a
+                          className="btn btn-facebook btn-simple mb-0 ps-1 pe-2 py-0"
+                          href={`https://www.twitter.com/${mainUser?.facebook}`}
                         >
-                          Mostrar imagen de perfil de otros usuarios
-                        </label>
+                          <i className="fab fa-facebook fa-lg" />
+                        </a>
+                        {mainUser?.facebook != null
+                          ? mainUser.facebook
+                          : "Edita tu perfil para añadirlo"}
                       </div>
                     </li>
+
                     <li className="list-group-item border-0 px-0">
                       <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault2"
-                          defaultChecked
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault2"
+                        <a
+                          className="btn btn-instagram btn-simple mb-0 ps-1 pe-2 py-0"
+                          href={`https://www.instagram.com/${mainUser?.instagram}`}
                         >
-                          Recibir notificaciones de mensajes
-                        </label>
+                          <i className="fab fa-instagram fa-lg" />
+                        </a>
+                        {mainUser?.instagram != null
+                          ? mainUser.instagram
+                          : "Edita tu perfil para añadirlo"}
                       </div>
                     </li>
                   </ul>
-                  <h6 className="text-uppercase text-body text-xs font-weight-bolder mt-4">
-                    Aplicación
+                  <h6 className="text-uppercase text-body text-xs font-weight-bolder mt-3">
+                    Teléfono
                   </h6>
-                  <ul className="list-group">
-                    <li className="list-group-item border-0 px-0">
-                      <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault3"
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault3"
-                        >
-                          Nuevos lanzamientos y proyectos
-                        </label>
-                      </div>
-                    </li>
-                    <li className="list-group-item border-0 px-0">
-                      <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault4"
-                          defaultChecked
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault4"
-                        >
-                          Actualizaciones mensuales del producto
-                        </label>
-                      </div>
-                    </li>
-                    <li className="list-group-item border-0 px-0 pb-0">
-                      <div className="form-check form-switch ps-0">
-                        <input
-                          className="form-check-input ms-auto"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault5"
-                        />
-                        <label
-                          className="form-check-label text-body ms-3 text-truncate w-80 mb-0"
-                          htmlFor="flexSwitchCheckDefault5"
-                        >
-                          Suscripción a la Newsletter
-                        </label>
-                      </div>
-                    </li>
-                  </ul>
+
+                  {mainUser?.movil != null
+                    ? mainUser?.movil
+                    : "Edita tu perfil para añadirlo"}
+                  <h6 className="text-uppercase text-body text-xs font-weight-bolder mt-3">
+                    Correo electrónico
+                  </h6>
+                  {mainUser?.email}
                 </div>
               </div>
             </div>
@@ -420,7 +375,7 @@ export const Profile = () => {
                 <div className="card-header pb-0 p-3">
                   <div className="row">
                     <div className="col-md-8 d-flex align-items-center">
-                      <h6 className="mb-0">Información de perfil</h6>
+                      <h6 className="mb-0">Datos biográficos</h6>
                     </div>
                     <div className="col-md-4 text-end">
                       <a onClick={() => setEditModal(true)}>
@@ -443,38 +398,13 @@ export const Profile = () => {
                       &nbsp;
                       {mainUser?.nombre}
                     </li>
-                    <li className="list-group-item border-0 ps-0 text-sm">
-                      <strong className="text-dark">Móvil:</strong> &nbsp;
-                      {mainUser?.movil}
-                    </li>
+
                     <li className="list-group-item border-0 ps-0 text-sm">
                       <strong className="text-dark">Email:</strong> &nbsp;
                       {mainUser?.email}
                     </li>
                     <li className="list-group-item border-0 ps-0 text-sm">
                       <strong className="text-dark">País:</strong> &nbsp; España
-                    </li>
-                    <li className="list-group-item border-0 ps-0 pb-0">
-                      <strong className="text-dark text-sm">Redes:</strong>{" "}
-                      &nbsp;
-                      <a
-                        className="btn btn-facebook btn-simple mb-0 ps-1 pe-2 py-0"
-                        href={`https://www.twitter.com/${mainUser?.facebook}`}
-                      >
-                        <i className="fab fa-facebook fa-lg" />
-                      </a>
-                      <a
-                        className="btn btn-twitter btn-simple mb-0 ps-1 pe-2 py-0"
-                        href={`https://www.twitter.com/${mainUser?.twitter}`}
-                      >
-                        <i className="fab fa-twitter fa-lg" />
-                      </a>
-                      <a
-                        className="btn btn-instagram btn-simple mb-0 ps-1 pe-2 py-0"
-                        href={`https://www.instagram.com/${mainUser?.instagram}`}
-                      >
-                        <i className="fab fa-instagram fa-lg" />
-                      </a>
                     </li>
                   </ul>
                 </div>
@@ -484,7 +414,7 @@ export const Profile = () => {
             <div className="col-12 col-xl-4">
               <div className="card card-plain h-100">
                 <div className="card-header pb-0 p-3">
-                  <h6 className="mb-0">Mensajes</h6>
+                  <h6 className="mb-0">Mensajes y usuarios</h6>
                 </div>
                 <div className="card-body p-3">
                   <ul className="list-group">
@@ -515,16 +445,26 @@ export const Profile = () => {
                             msgList={msgFromThisUser}
                             avatarSender={imageUrl}
                             avatarReceiver={userImageUrls[user.id]}
-                           
                           />
                         </div>
 
-                        <button
+                        <a
                           onClick={() => handleChatModal(user.nombre)}
                           className="text-xs btn btn-sm btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
                         >
-                          Ver
-                        </button>
+                          <i className="material-icons text-lg position-relative">
+                            email
+                          </i>
+                        </a>
+
+                        <a onClick={() => setEditModal(true)}>
+                        <i
+                          className="fas fa-user text-secondary text-sm"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Edit Profile"
+                        />
+                      </a>
                       </li>
                     ))}
                   </ul>

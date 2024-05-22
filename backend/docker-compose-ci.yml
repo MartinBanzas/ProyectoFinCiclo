@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
 
-  apikifirifis:
-    container_name: apib2c
-    image: acralphamilk.azurecr.io/apib2c:latest
+  apifinciclo:
+    container_name: afinfinciclo
+    image: martin.azurecr.io/apifinciclo:latest
     build:
       context: ./api
       dockerfile: dockerfile

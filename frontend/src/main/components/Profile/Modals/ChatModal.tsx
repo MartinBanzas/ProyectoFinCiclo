@@ -50,7 +50,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           element.sender === receiver ||
           (element.sender === getNombre && element.receiver === receiver)
       );
-
+      setShowModal(false);
       // Limpia el texto de entrada
       setInputText("");
     } catch (error) {
@@ -72,7 +72,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
     return new Date(timestamp).toLocaleDateString("es-ES", options);
   };
- //Examina que los avatares que se le pasan están definidos, en caso contrario, coge el por defecto.
+  //Examina que los avatares que se le pasan están definidos, en caso contrario, coge el por defecto.
   avatarReceiver
     ? (avatarReceiver = avatarReceiver)
     : (avatarReceiver = unknown);

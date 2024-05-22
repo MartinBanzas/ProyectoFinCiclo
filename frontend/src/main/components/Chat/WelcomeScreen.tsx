@@ -1,6 +1,6 @@
 import img from '../../../assets/img/_545f1248-ae29-4d9a-b1cd-e17347924342.jpeg'
 
-import './custom.css'; // Importa tu archivo de estilos CSS
+import './custom.css'; 
 
 export const WelcomeScreen = () => {
   return (

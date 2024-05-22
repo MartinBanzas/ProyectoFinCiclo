@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone, date
 
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, SecurityScopes, APIKeyQuery, APIKeyHeader
 import os
 from jose import jwt, JWTError
 from passlib.context import CryptContext
@@ -15,6 +14,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
@@ -25,5 +25,5 @@ def create_token(*, data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(days=30)
     to_encode.update({"exp": int(expire.timestamp() * 1000)})  # Hay que multiplicar por 1000 para desplazar la coma 3 cifras a la derecha
-    encoded_jwt = jwt.encode(to_encode, "HJSDSKAGDJAS", algorithm="HS256")  # Solo dos argumentos aquí
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")  # Solo dos argumentos aquí
     return encoded_jwt
