@@ -1,0 +1,10 @@
+.font-error {
+    font-size: smaller;
+}
+
+.message-time {
+    display: block;
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 5px;
+  }

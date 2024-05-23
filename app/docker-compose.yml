@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  frontendmartin:
+    image: finciclo.azurecr.io/martinfrontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

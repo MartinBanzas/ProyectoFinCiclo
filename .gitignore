@@ -1,17 +1,18 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+Corrijo gitignore
 # dependencies
-/frontend/node_modules
+/app/frontend/node_modules/
 /.pnp
 .pnp.js
 /backend/venv
 # testing
 /coverage
-
+/app/frontend/node_modules/
+/node_modules/
 # production
 /build
-/frontend/src/assets/music
-
+/app/frontend/src/assets/music
+/node_modules/
 
 
 # misc
