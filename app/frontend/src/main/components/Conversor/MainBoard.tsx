@@ -1,6 +1,7 @@
 import { Calculator } from "./Calculator";
 
 import { CoinConversor } from "./CoinConversor";
+import { PassGenerator } from "./PassGenerator";
 import { Units } from "./Units";
 
 export const Board = () => {
@@ -19,8 +20,8 @@ export const Board = () => {
         <div className="col-md-3 mt-5">
           <Calculator />
         </div>
-        <div className="ms-8 col-md-3 mt-5">
-         
+        <div className="ms-8 w-50 col-md-3 mt-5">
+         <PassGenerator/>
         </div>
       </div>
     </div>

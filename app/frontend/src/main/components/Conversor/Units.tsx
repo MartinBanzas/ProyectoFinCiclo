@@ -9,6 +9,7 @@ export const Units = () => {
         yards: 0.9144,
         galons: 3.78541,
         kw: 1.34102
+        
     }
     const [amount, setAmount] = useState();
     const [selectedUnit, setSelectedUnit] = useState('');
@@ -29,6 +30,7 @@ export const Units = () => {
             case 'Miles': const km = Number(amount)*Number(rates.miles); setConvertedAmount(km.toString() +"km"); break;
             case 'Yards': const meters = Number(amount)*Number(rates.yards); setConvertedAmount(meters.toFixed(2).toString() +"metros"); break; 
             case 'Feet': const heightMeters = Number(amount)*Number(rates.feet); setConvertedAmount(heightMeters.toFixed(2).toString() +"metro(s)"); break; 
+            case 'Fahrenheit': const celsius = (Number(amount)-32)/1.8; setConvertedAmount(celsius.toFixed(2).toString() +"ºC"); break;
         } 
     }
 
@@ -57,6 +59,9 @@ export const Units = () => {
         
             <input type="radio" className="form-check-input " onChange={handleChangeRadio} id="yardas" name="units" value="Yards" />
             <label htmlFor="yardas">Yardas</label>
+
+            <input type="radio" className="form-check-input " onChange={handleChangeRadio} id="fahrenheit" name="units" value="Fahrenheit" />
+            <label htmlFor="fahrenheit">Fahrenheit</label>
 
             <input type="number" className="form-text mt-3 w-100" placeholder="Introduce la cantidad" onChange={handleChangeInput}></input>
             <p className="display-4 leading">{convertedAmount !== '' ? convertedAmount : ''}</p>

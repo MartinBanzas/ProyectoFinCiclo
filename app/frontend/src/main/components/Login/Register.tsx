@@ -21,16 +21,16 @@ export const Register = () => {
   const validateFields = () => {
     const validation = FormValidation(name, password, email);
   
-    if (!validation[0]) {
+    if (!validation[2]) {
       setValidationNombre("*El nombre contiene caracteres inválidos o no se ajusta a los requisitos.");
     }
     if (!validation[1]) {
       setValidationPassword("*La contraseña debe tener mínimo ocho caracteres, mayúsculas y un número.");
     }
-    if (!validation[2]) {
+    if (!validation[0]) {
       setValidationEmail("*El email no es correcto.");  
     }
-    if (validation) {
+    if (validation[0] && validation[1] && validation[2]) {
       sendRegisterRequest()
     }    
 

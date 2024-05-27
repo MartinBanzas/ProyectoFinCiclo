@@ -27,7 +27,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 }) => {
   const [inputText, setInputText] = React.useState("");
 
-  console.log(avatarSender);
+console.log(getNombre)
 
   const postNewMsg = async (event: any) => {
     const newMsg = {

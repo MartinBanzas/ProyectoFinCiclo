@@ -2,7 +2,6 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Rates, fetchRateExchange } from "./utils/DataAPI";
 
 
-
 export const CoinConversor = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [amount, setAmount] = useState<string>("");
