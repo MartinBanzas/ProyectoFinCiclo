@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 import os
 from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 from database.db import create_db_and_tables, get_session_context
 from slowapi import Limiter
 from slowapi.util import get_remote_address

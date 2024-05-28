@@ -4,20 +4,19 @@ import UserModel from "../../../../models/UserModel";
 import unknown from "../../../../assets/icons/User_icon.png";
 
 interface ProfileModalProps {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  profileModal: boolean;
+  setOtherProfileModal: React.Dispatch<React.SetStateAction<boolean>>;
+  otherProfileModal: boolean;
   user: UserModel | null;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
-  setShowModal,
-  profileModal,
+  setOtherProfileModal,
+  otherProfileModal,
   user
 }) => {
 
-
   return (
-    <Modal show={profileModal} onHide={() => setShowModal(false)}>
+    <Modal show={otherProfileModal} onHide={() => setOtherProfileModal(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Información del Perfil</Modal.Title>
       </Modal.Header>
@@ -65,7 +64,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
+        <Button variant="secondary" onClick={() => setOtherProfileModal(false)}>
           Cerrar
         </Button>
       </Modal.Footer>

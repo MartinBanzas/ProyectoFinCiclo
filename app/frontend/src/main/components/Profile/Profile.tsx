@@ -20,15 +20,20 @@ export interface Message {
   date: Date;
 }
 
+export interface UserAndAvatar {
+  user: UserModel;
+  avatar: string;
+}
+
 export const Profile = () => {
   const [selectedUser, setSelectedUser] = React.useState<UserModel>();
+  const [otherProfileModal, setOtherProfileModal] = React.useState(false);
   const [mainUser, setMainUser] = React.useState<UserModel>();
   const [otherUsers, setOtherUsers] = React.useState<UserModel[]>([]);
   const [fireBaseMessages, setFireBaseMessages] = React.useState<Message[]>([]);
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [chatModal, setChatModal] = React.useState(false);
   const [editModal, setEditModal] = React.useState(false);
-  const [profileModal, setProfileModal] = React.useState(false);
   const [msgFromThisUser, setMsgFromThisUser] = React.useState<Message[]>([]);
   const [avatarModal, setAvatarModal] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState("");
@@ -123,11 +128,6 @@ export const Profile = () => {
     setChatModal(true);
   };
 
-  const handleProfileModal = (user: UserModel) => {
-    setSelectedUser(user);
-    setProfileModal(true);
-  };
-
   const lastMsg = (username: string) => {
     const msgFromThisUser = fireBaseMessages.filter(
       (element) =>
@@ -189,19 +189,17 @@ export const Profile = () => {
       );
       if (response.ok) {
         const blob = await response.blob();
-        if (id == userId) {
-          setImageUrl(URL.createObjectURL(blob));
-          console.log(blob);
-        }
-        return URL.createObjectURL(blob); // Return the URL for other users
+
+        setImageUrl(URL.createObjectURL(blob));
+        console.log(imageUrl);
+
+        return URL.createObjectURL(blob);
       } else {
+        setImageUrl(unknown);
         console.error("Error al obtener la imagen");
-        setImageUrl(unknown)
-        return unknown; // Return the unknown image for other users
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
-      return unknown; // Return the unknown image for other users in case of an error
     }
   };
 
@@ -232,6 +230,17 @@ export const Profile = () => {
 
     fetchUserImages();
   }, [otherUsers]);
+
+  const handleUserSelection = (user: UserModel) => {
+    setSelectedUser(user);
+    setOtherProfileModal(true);
+  };
+
+  const handleChatModalView = (user: UserModel) => {
+    setSelectedUser(user);
+    setChatModal(true);
+    handleChatModal(user.nombre)
+  };
 
   return isReady ? (
     <div className="container-fluid px-2 px-md-7 main-content w-auto">
@@ -394,7 +403,7 @@ export const Profile = () => {
                           className="fas fa-user-edit text-secondary text-sm"
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
-                          title="Editar perfil"
+                          title="Edit Profile"
                         />
                       </a>
                     </div>
@@ -449,25 +458,10 @@ export const Profile = () => {
                         <div className="d-flex align-items-start flex-column justify-content-center w-75">
                           <h6 className="mb-0 text-sm">{user.nombre}</h6>
                           <p className="mb-0 text-xs">{lastMsg(user.nombre)}</p>
-                          <ChatModal
-                            setShowModal={setChatModal}
-                            receiver={user.nombre}
-                            showModal={chatModal}
-                            msgList={msgFromThisUser}
-                            avatarSender={imageUrl}
-                            avatarReceiver={userImageUrls[user.id]}
-                          />
                         </div>
 
-                        <ProfileModal
-                          setShowModal={setProfileModal}
-                          profileModal={profileModal}
-                          user={selectedUser || null}
-
-                        />
-
                         <a
-                          onClick={() => handleChatModal(user.nombre)}
+                          onClick={() => handleChatModalView(user)}
                           className="text-xs btn btn-sm btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
                         >
                           <i className="material-icons text-lg position-relative">
@@ -475,12 +469,12 @@ export const Profile = () => {
                           </i>
                         </a>
 
-                        <a onClick={() => handleProfileModal(user)}>
+                        <a onClick={() => handleUserSelection(user)}>
                           <i
                             className="fas fa-user text-secondary text-sm"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="Ver perfil"
+                            title="Edit Profile"
                           />
                         </a>
                       </li>
@@ -492,7 +486,19 @@ export const Profile = () => {
           </div>
         </div>
       </div>
-
+      { selectedUser ?
+      <ChatModal
+        setShowModal={setChatModal}
+        receiver={selectedUser || null}
+        showModal={chatModal}
+        msgList={msgFromThisUser}
+        avatarSender={imageUrl}
+      /> : null }
+      <ProfileModal
+        setOtherProfileModal={setOtherProfileModal}
+        otherProfileModal={otherProfileModal}
+        user={selectedUser || null}
+      />
       <AvatarModal
         setAvatarModal={setAvatarModal}
         avatarModal={avatarModal}

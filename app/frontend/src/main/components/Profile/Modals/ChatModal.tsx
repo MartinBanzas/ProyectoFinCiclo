@@ -1,20 +1,20 @@
 import { Modal, Button } from "react-bootstrap";
-import React, { MouseEvent } from "react";
+import React, { useEffect } from "react";
 import { Message } from "../Profile";
 import { nanoid } from "nanoid";
-import { setDoc, doc, onSnapshot, getDoc } from "firebase/firestore";
-import { getNombre } from "../../Login/TokenHandler";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { getNombre, userId } from "../../Login/TokenHandler";
 import { db } from "../../../utils/FirebaseConfig";
 import unknown from "../../../../assets/icons/User_icon.png";
-import './ChatModal.css'; // Import the CSS file for styling
+import "./ChatModal.css"; // Import the CSS file for styling
+import UserModel from "../../../../models/UserModel";
 
 interface ChatModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   showModal: boolean;
   msgList: Message[];
-  receiver: string;
+  receiver: any;
   avatarSender: string;
-  avatarReceiver: string;
 }
 
 export const ChatModal: React.FC<ChatModalProps> = ({
@@ -22,17 +22,22 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   setShowModal,
   msgList,
   receiver,
-  avatarSender,
-  avatarReceiver,
+ 
 }) => {
   const [inputText, setInputText] = React.useState("");
+  const [senderAvatar, setSenderAvatar] = React.useState("");
+  const [receiverAvatar, setReceiverAvatar] = React.useState("");
 
-console.log(getNombre)
+  useEffect(() => {
+    if (receiver !=null) {
+    fetchImage(receiver.id);
+    fetchImage(userId);}
+  }, [receiver]); 
 
-  const postNewMsg = async (event: any) => {
+  const postNewMsg = async () => {
     const newMsg = {
       key: nanoid(),
-      sender: getNombre(),
+      sender: getNombre,
       body: inputText,
       receiver: receiver,
       date: Date.now(),
@@ -46,20 +51,46 @@ console.log(getNombre)
       const updatedData = [...data, newMsg];
       await setDoc(docRef, { lists: updatedData });
 
-      // Actualiza el estado local con el nuevo mensaje
-      // Actualiza el estado de los mensajes a mostrar
-      const msgFromThisUser = updatedData.filter(
-        (element) =>
-          element.sender === receiver ||
-          (element.sender === getNombre() && element.receiver === receiver)
-      );
-      setShowModal(false);
       // Limpia el texto de entrada
       setInputText("");
     } catch (error) {
       console.error("Error al guardar en Firestore:", error);
     }
   };
+
+  const fetchImage = async (id: Number) => {
+    console.log(receiver.id)
+    console.log(userId)
+    try {
+      const response = await fetch(
+        `http://localhost:5000/drive/get/avatar/${id}`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const blob = await response.blob();
+
+        if (id==userId) {
+          setSenderAvatar(URL.createObjectURL(blob))
+        } else {
+          setReceiverAvatar(URL.createObjectURL(blob))
+        }
+        //set(URL.createObjectURL(blob));
+        //console.log(avatar);
+
+        return URL.createObjectURL(blob);
+      } else {
+        if (!receiverAvatar) setReceiverAvatar(unknown)
+          //Meter aquí una imagen por defecto para sender
+        console.error("Error al obtener la imagen");
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
+  
 
   const formatDateTime = (timestamp: any) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -76,9 +107,10 @@ console.log(getNombre)
     return new Date(timestamp).toLocaleDateString("es-ES", options);
   };
 
-  // Examina que los avatares que se le pasan están definidos, en caso contrario, coge el por defecto.
-  avatarReceiver = avatarReceiver || unknown;
-  avatarSender = avatarSender || unknown;
+  const yourAvatar = senderAvatar != null ? senderAvatar : unknown
+  const otherUser = receiverAvatar != undefined ? receiverAvatar : unknown
+  console.log(receiverAvatar)
+
 
   return (
     <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -88,20 +120,11 @@ console.log(getNombre)
       <Modal.Body className="chat-modal-body">
         {msgList.map((message) => (
           <div
-            key={message.key}
-            className={`message ${
-              getNombre === message.sender ? "sent" : "received"
-            }`}
+            key={nanoid()}
+            className={getNombre === message.sender ? "sent" : "received"}
           >
             <div className="message-content">
-              
-              <img
-                src={
-                  getNombre === message.sender ? avatarSender : avatarReceiver
-                }
-                alt="Avatar"
-                className="message-avatar"
-              />
+              <img src={getNombre === message.sender ? yourAvatar : otherUser} alt="Avatar" className="message-avatar" />
               <div className="message-text">
                 <p>{message.body}</p>
                 <small className="message-time">
