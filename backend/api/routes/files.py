@@ -75,7 +75,7 @@ async def upload_file(
         newFile.type=mime_type
         db.add(newFile)
         db.commit()
-        return ORJSONResponse(content={"filename": file.filename, "saved_path": file.path})
+        return ORJSONResponse(content={"filename": file.filename, "saved_path": file_path})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error subiendo el archivo: {str(e)}")
 

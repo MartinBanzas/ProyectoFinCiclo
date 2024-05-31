@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { get_all_users } from "../../utils/UserDataRest";
 import UserModel from "../../../models/UserModel";
 import React from "react";
-import { getNombre, userId } from "../Login/TokenHandler";
+import { getNombre, roles, userId } from "../Login/TokenHandler";
 import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "../../utils/FirebaseConfig";
 import { SpinnerLoading } from "../../utils/SpinnerLoading";
@@ -11,6 +11,7 @@ import { EditModal } from "./Modals/EditModal";
 import { AvatarModal } from "./Modals/AvatarModal";
 import unknown from "../../../assets/icons/User_icon.png";
 import { ProfileModal } from "./Modals/ProfileModal";
+
 
 export interface Message {
   key: string;
@@ -190,12 +191,16 @@ export const Profile = () => {
       if (response.ok) {
         const blob = await response.blob();
 
-        setImageUrl(URL.createObjectURL(blob));
-        console.log(imageUrl);
+        const newImageUrl = URL.createObjectURL(blob);
 
-        return URL.createObjectURL(blob);
+        console.log('Fetched image URL:', imageUrl);
+  
+        setImageUrl(newImageUrl);
+        console.log(newImageUrl)
+        return imageUrl;
+       
       } else {
-        setImageUrl(unknown);
+       
         console.error("Error al obtener la imagen");
       }
     } catch (error) {
@@ -241,6 +246,7 @@ export const Profile = () => {
     setChatModal(true);
     handleChatModal(user.nombre)
   };
+  console.log(roles)
 
   return isReady ? (
     <div className="container-fluid px-2 px-md-7 main-content w-auto">
@@ -269,7 +275,7 @@ export const Profile = () => {
             <div className="h-100">
               <h5 className="mb-1">{mainUser?.nombre}</h5>
               <p className="mb-0 font-weight-normal text-sm">
-                CEO / Co-Founder
+               {roles != null ? "Supervisor" : "Empleado"}
               </p>
             </div>
           </div>
