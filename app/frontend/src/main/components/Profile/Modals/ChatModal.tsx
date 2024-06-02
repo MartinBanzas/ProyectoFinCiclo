@@ -1,13 +1,12 @@
 import { Modal, Button } from "react-bootstrap";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Message } from "../Profile";
 import { nanoid } from "nanoid";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { getNombre, userId } from "../../Login/TokenHandler";
 import { db } from "../../../utils/FirebaseConfig";
 import unknown from "../../../../assets/icons/User_icon.png";
-import "./ChatModal.css"; 
-
+import "./ChatModal.css";
 
 interface ChatModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,7 +14,7 @@ interface ChatModalProps {
   msgList: Message[];
   receiver: any;
   avatarSender: string;
-  avatarReceiver: string | number
+  avatarReceiver: string | number;
 }
 
 export const ChatModal: React.FC<ChatModalProps> = ({
@@ -24,21 +23,18 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   msgList,
   receiver,
   avatarSender,
-  avatarReceiver
- 
+  avatarReceiver,
 }) => {
-  const [inputText, setInputText] = React.useState("");
-  const [senderAvatar, setSenderAvatar] = React.useState("");
-  const [receiverAvatar, setReceiverAvatar] = React.useState("");
-
+  const [inputText, setInputText] = useState("");
+  const [orderedMsg, setOrderedMsg] = useState<Message[]>([]);
 
   const postNewMsg = async () => {
-    const newMsg = {
+    const newMsg: Message = {
       key: nanoid(),
       sender: getNombre,
       body: inputText,
       receiver: receiver,
-      date: Date.now(),
+      date: new Date(), // Convertir a objeto Date
     };
 
     try {
@@ -51,26 +47,35 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
       // Limpia el texto de entrada
       setInputText("");
-    
+
+      // Actualiza el estado orderedMsg con el nuevo mensaje
+      setOrderedMsg((prevMsgs) => [...prevMsgs, newMsg]);
     } catch (error) {
       console.error("Error al guardar en Firestore:", error);
     }
   };
 
+  useEffect(() => {
+    const convertToMessage = (msg: any): Message => {
+      if (msg.date && msg.date.seconds) {
+        return {
+          ...msg,
+          date: new Date(
+            msg.date.seconds * 1000 + msg.date.nanoseconds / 1000000
+          ),
+        };
+      }
+      return { ...msg, date: new Date(msg.date) };
+    };
 
+    const ordered = msgList
+      .map(convertToMessage)
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-useEffect(()=> {
-  msgList.sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return dateA.getTime() - dateB.getTime();
-  })
-  console.log(msgList)
-}, [msgList])
+    setOrderedMsg(ordered);
+  }, [msgList]);
 
-
-
-  const formatDateTime = (timestamp: any) => {
+  const formatDateTime = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
       year: "numeric",
@@ -81,15 +86,12 @@ useEffect(()=> {
       hour12: false,
       timeZone: "Europe/Madrid",
     };
-
-    return new Date(timestamp).toLocaleDateString("es-ES", options);
+    return date.toLocaleDateString("es-ES", options);
   };
 
-  const yourAvatar = avatarSender != null ? avatarSender : unknown
-  const otherUser = avatarReceiver != undefined ? avatarReceiver : unknown
-  console.log(receiverAvatar)
-  console.log(senderAvatar)
-
+  const yourAvatar = avatarSender != null ? avatarSender : unknown;
+  const otherUser =
+    avatarReceiver != undefined ? avatarReceiver.toString() : unknown;
 
   return (
     <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -97,13 +99,18 @@ useEffect(()=> {
         <Modal.Title>Historial de mensajes</Modal.Title>
       </Modal.Header>
       <Modal.Body className="chat-modal-body">
-        {msgList.map((message) => (
+        {orderedMsg?.map((message) => (
           <div
-            key={nanoid()}
+            key={message.key}
             className={getNombre === message.sender ? "sent" : "received"}
           >
             <div className="message-content">
-            <img src={getNombre === message.sender ? yourAvatar : otherUser.toString()} alt="Avatar" className="message-avatar" />              <div className="message-text">
+              <img
+                src={getNombre === message.sender ? yourAvatar : otherUser}
+                alt="Avatar"
+                className="message-avatar"
+              />
+              <div className="message-text">
                 <p>{message.body}</p>
                 <small className="message-time">
                   {formatDateTime(message.date)}
@@ -112,7 +119,6 @@ useEffect(()=> {
             </div>
           </div>
         ))}
-
         <input
           id="messageBody"
           className="message-input mt-2"

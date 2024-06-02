@@ -21,8 +21,14 @@ export const Calculator = () => {
     }
   };
 
-  const handleButtonClick = (event: any) =>
-    setNumber(number + event.target.value);
+  const handleButtonClick = (event: any) => {
+    const newNumber = number + event.target.value;
+    if (newNumber.length <= 7) {
+      setNumber(newNumber);
+    } else {
+      console.log("Número máximo de cifras alcanzado");
+    }
+  };
 
   const handleOtherOperations = (event: any) => {
     try {

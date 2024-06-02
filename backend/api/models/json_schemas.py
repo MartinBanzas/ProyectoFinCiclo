@@ -5,7 +5,7 @@ Esquemas de SQLModel para definir los esquemas para interactuar con la base de d
 
 from sqlalchemy import false
 from sqlmodel import SQLModel
-from typing import List, Optional
+from typing import Optional
 from datetime import date, datetime
 
 #Schema para obtención de todos los datos del usuario

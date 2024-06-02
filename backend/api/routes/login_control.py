@@ -1,17 +1,13 @@
 from collections import defaultdict
 from typing import Dict, List
-from fastapi import APIRouter, Depends, HTTPException, Security, Request
-from fastapi.responses import ORJSONResponse, Response
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import ORJSONResponse
 from datetime import date, datetime, timedelta
 from sqlalchemy.orm import joinedload
 from database.db import get_session_context
 from sqlalchemy.orm import Session
 from models.json_schemas import schemaLoginList
 from models.database_models import LoginControl, User
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-
-
 
 router = APIRouter(
     tags=["LoginControl"],

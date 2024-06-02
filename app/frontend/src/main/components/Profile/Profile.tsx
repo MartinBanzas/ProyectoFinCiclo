@@ -18,7 +18,7 @@ export interface Message {
   sender: string;
   body: string;
   receiver: string;
-  date: Date;
+  date: Date ;
 }
 
 export interface UserAndAvatar {
@@ -133,15 +133,29 @@ export const Profile = () => {
 
  
   const lastMsg = (username: string | undefined) => {
-    const msgFromThisUser = fireBaseMessages.filter(
+    const convertToMessage = (msg: any): Message => {
+      if (msg.date && msg.date.seconds) {
+        return {
+          ...msg,
+          date: new Date(
+            msg.date.seconds * 1000 + msg.date.nanoseconds / 1000000
+          ),
+        };
+      }
+      return { ...msg, date: new Date(msg.date) };
+    };
+  
+    // Convertir las fechas de los mensajes
+    const convertedMessages = fireBaseMessages.map(convertToMessage);
+  
+    const msgFromThisUser = convertedMessages.filter(
       (element) =>
         (element.sender === username && element.receiver === getNombre) ||
         (element.sender === getNombre && element.receiver === username)
     );
+  
     msgFromThisUser.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return dateB.getTime() - dateA.getTime();
+      return b.date.getTime() - a.date.getTime();
     });
   
     // Devolver el primer mensaje del array, que será el más reciente
@@ -150,7 +164,6 @@ export const Profile = () => {
       ? "Aún no hay mensajes con este usuario"
       : currentlastMsg.body;
   };
-
 
 
   //useEffects para obtener mensajes, filtrarlos...desde Firebase.
@@ -199,7 +212,7 @@ export const Profile = () => {
         return newImageUrl;
       } else {
         console.error("Error al obtener la imagen");
-        return undefined;
+        return unknown;
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -247,6 +260,7 @@ export const Profile = () => {
     handleChatModal(user.nombre);
   };
 
+  console.log(roles)
   
 
   return isReady ? (

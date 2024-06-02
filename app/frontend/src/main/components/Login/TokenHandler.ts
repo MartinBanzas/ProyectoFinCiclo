@@ -17,7 +17,7 @@ const TokenHandler = () => {
     //Fecha caducidad
     const expirationTimestamp = payload.exp;
 
-    //username
+    //username, roles e id
     const roles=payload.roles;
     const nombre = payload.nombre;
     const userId=payload.id;

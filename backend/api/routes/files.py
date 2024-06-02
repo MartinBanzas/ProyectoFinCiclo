@@ -1,13 +1,13 @@
 import datetime
 import os
 
-from fastapi import APIRouter, Depends, HTTPException, Security, Request, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from fastapi.responses import ORJSONResponse, FileResponse
 from database.db import get_session_context
 from sqlalchemy.orm import Session
-from models.json_schemas import schemaFiles, schemaUser
-from models.database_models import File, User
-import mimetypes, imghdr
+from models.json_schemas import schemaFiles
+from models.database_models import File
+import mimetypes
 
 router = APIRouter(
     tags=["Files"],

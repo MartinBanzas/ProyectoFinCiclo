@@ -5,7 +5,7 @@ Esquemas de sqlalchemy para definir las tablas de la base de datos e interactuar
 # Librerías
 from sqlalchemy import (
     Boolean, Column, ForeignKey, Integer, String, 
-    Float, UniqueConstraint, Text, Date
+     UniqueConstraint, Text, Date
 )
 from sqlalchemy.orm import relationship
 from database.db import Base

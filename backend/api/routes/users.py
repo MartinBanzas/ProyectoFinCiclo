@@ -1,6 +1,6 @@
 
-from fastapi import APIRouter, Depends, HTTPException, Security, Request
-from fastapi.responses import ORJSONResponse, Response
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import ORJSONResponse
 from database.db import get_session_context
 from sqlalchemy.orm import Session
 from models.json_schemas import schemaUpdateUserData, schemaUser, schemaUserInsert, schemaUserTetrisHighScore, schemaUserLoginForm
@@ -148,5 +148,5 @@ async def addUser(id:int,
 
     return ORJSONResponse(
             status_code=200,
-            content={'mensaje':f'¡Usuario borrado correctamente!'}
+            content={'mensaje':'¡Usuario borrado correctamente!'}
         )
