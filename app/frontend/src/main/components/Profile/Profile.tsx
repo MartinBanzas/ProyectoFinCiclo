@@ -39,7 +39,7 @@ export const Profile = () => {
   const [avatarModal, setAvatarModal] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState("");
   const [userImageUrls, setUserImageUrls] = React.useState<{
-    [key: number]: string;
+    [key: string]: string;
   }>({});
 
   const updateUser = useCallback(
@@ -80,7 +80,7 @@ export const Profile = () => {
         console.log("Error actualizando el recurso");
       }
     },
-    []
+    [mainUser]
   );
 
   const handleAvatarUpload = useCallback(
@@ -129,7 +129,10 @@ export const Profile = () => {
     setChatModal(true);
   };
 
-  const lastMsg = (username: string) => {
+
+
+ 
+  const lastMsg = (username: string | undefined) => {
     const msgFromThisUser = fireBaseMessages.filter(
       (element) =>
         (element.sender === username && element.receiver === getNombre) ||
@@ -140,13 +143,15 @@ export const Profile = () => {
       const dateB = new Date(b.date);
       return dateB.getTime() - dateA.getTime();
     });
-
+  
     // Devolver el primer mensaje del array, que será el más reciente
     const currentlastMsg = msgFromThisUser[0];
     return currentlastMsg === undefined
       ? "Aún no hay mensajes con este usuario"
       : currentlastMsg.body;
   };
+
+
 
   //useEffects para obtener mensajes, filtrarlos...desde Firebase.
   useEffect(() => {
@@ -190,27 +195,27 @@ export const Profile = () => {
       );
       if (response.ok) {
         const blob = await response.blob();
-
         const newImageUrl = URL.createObjectURL(blob);
-
-        console.log('Fetched image URL:', imageUrl);
-  
-        setImageUrl(newImageUrl);
-        console.log(newImageUrl)
-        return imageUrl;
-       
+        return newImageUrl;
       } else {
-       
         console.error("Error al obtener la imagen");
+        return undefined;
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
+      return undefined;
     }
   };
 
   useEffect(() => {
-    fetchImage(userId);
-  }, []);
+    const fetchLoggedInUserImage = async () => {
+      const url = await fetchImage(userId);
+      if (url) {
+        setImageUrl(url);
+      }
+    };
+    fetchLoggedInUserImage();
+  }, [userId]);
 
   useEffect(() => {
     const fetchUserImages = async () => {
@@ -219,12 +224,7 @@ export const Profile = () => {
         try {
           const url = await fetchImage(user.id);
           if (url) {
-            // Verificar si la URL no es undefined
             urls[user.id] = url;
-          } else {
-            console.error(
-              `La URL de imagen para el usuario ${user.id} es undefined`
-            );
           }
         } catch (error) {
           console.error(`Error fetching image for user ${user.id}:`, error);
@@ -244,9 +244,10 @@ export const Profile = () => {
   const handleChatModalView = (user: UserModel) => {
     setSelectedUser(user);
     setChatModal(true);
-    handleChatModal(user.nombre)
+    handleChatModal(user.nombre);
   };
-  console.log(roles)
+
+  
 
   return isReady ? (
     <div className="container-fluid px-2 px-md-7 main-content w-auto">
@@ -493,13 +494,14 @@ export const Profile = () => {
         </div>
       </div>
       { selectedUser ?
-      <ChatModal
-        setShowModal={setChatModal}
-        receiver={selectedUser || null}
-        showModal={chatModal}
-        msgList={msgFromThisUser}
-        avatarSender={imageUrl}
-      /> : null }
+  <ChatModal
+    setShowModal={setChatModal}
+    receiver={selectedUser.nombre || null}
+    showModal={chatModal}
+    msgList={msgFromThisUser}
+    avatarSender={imageUrl}
+    avatarReceiver={userImageUrls[selectedUser.id!]}
+  /> : null }
       <ProfileModal
         setOtherProfileModal={setOtherProfileModal}
         otherProfileModal={otherProfileModal}

@@ -6,8 +6,8 @@ import { setDoc, doc, getDoc } from "firebase/firestore";
 import { getNombre, userId } from "../../Login/TokenHandler";
 import { db } from "../../../utils/FirebaseConfig";
 import unknown from "../../../../assets/icons/User_icon.png";
-import "./ChatModal.css"; // Import the CSS file for styling
-import UserModel from "../../../../models/UserModel";
+import "./ChatModal.css"; 
+
 
 interface ChatModalProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,6 +15,7 @@ interface ChatModalProps {
   msgList: Message[];
   receiver: any;
   avatarSender: string;
+  avatarReceiver: string | number
 }
 
 export const ChatModal: React.FC<ChatModalProps> = ({
@@ -22,17 +23,14 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   setShowModal,
   msgList,
   receiver,
+  avatarSender,
+  avatarReceiver
  
 }) => {
   const [inputText, setInputText] = React.useState("");
   const [senderAvatar, setSenderAvatar] = React.useState("");
   const [receiverAvatar, setReceiverAvatar] = React.useState("");
 
-  useEffect(() => {
-    if (receiver !=null) {
-    fetchImage(receiver.id);
-    fetchImage(userId);}
-  }, [receiver]); 
 
   const postNewMsg = async () => {
     const newMsg = {
@@ -53,44 +51,24 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
       // Limpia el texto de entrada
       setInputText("");
+    
     } catch (error) {
       console.error("Error al guardar en Firestore:", error);
     }
   };
 
-  const fetchImage = async (id: Number) => {
-    console.log(receiver.id)
-    console.log(userId)
-    try {
-      const response = await fetch(
-        `http://localhost:5000/drive/get/avatar/${id}`,
-        {
-          method: "GET",
-        }
-      );
-      if (response.ok) {
-        const blob = await response.blob();
 
-        if (id==userId) {
-          setSenderAvatar(URL.createObjectURL(blob))
-        } else {
-          setReceiverAvatar(URL.createObjectURL(blob))
-        }
-        //set(URL.createObjectURL(blob));
-        //console.log(avatar);
 
-        return URL.createObjectURL(blob);
-      } else {
-        if (!receiverAvatar) setReceiverAvatar(unknown)
-          //Meter aquí una imagen por defecto para sender
-        console.error("Error al obtener la imagen");
-      }
-    } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
-    }
-  };
+useEffect(()=> {
+  msgList.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA.getTime() - dateB.getTime();
+  })
+  console.log(msgList)
+}, [msgList])
 
-  
+
 
   const formatDateTime = (timestamp: any) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -107,9 +85,10 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     return new Date(timestamp).toLocaleDateString("es-ES", options);
   };
 
-  const yourAvatar = senderAvatar != null ? senderAvatar : unknown
-  const otherUser = receiverAvatar != undefined ? receiverAvatar : unknown
+  const yourAvatar = avatarSender != null ? avatarSender : unknown
+  const otherUser = avatarReceiver != undefined ? avatarReceiver : unknown
   console.log(receiverAvatar)
+  console.log(senderAvatar)
 
 
   return (
@@ -124,8 +103,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
             className={getNombre === message.sender ? "sent" : "received"}
           >
             <div className="message-content">
-              <img src={getNombre === message.sender ? yourAvatar : otherUser} alt="Avatar" className="message-avatar" />
-              <div className="message-text">
+            <img src={getNombre === message.sender ? yourAvatar : otherUser.toString()} alt="Avatar" className="message-avatar" />              <div className="message-text">
                 <p>{message.body}</p>
                 <small className="message-time">
                   {formatDateTime(message.date)}

@@ -58,24 +58,43 @@ async def upload_file(
         db: Session = Depends(get_session_context)
 ):
     try:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        # Obtener la extensión del archivo
+        file_extension = os.path.splitext(file.filename)[1]
+        file_name_without_extension = os.path.splitext(file.filename)[0]
+
+        # Comprobar si existe un archivo con el mismo nombre en la base de datos
+        existing_file = db.query(File).filter(File.path == file.filename).first()
+        counter = 1
+
+        new_file_name = file.filename
+
+        # Generar un nuevo nombre de archivo si ya existe
+        while existing_file or os.path.exists(os.path.join(UPLOAD_DIR, new_file_name)):
+            new_file_name = f"{file_name_without_extension}({counter}){file_extension}"
+            #Vuelve a hacer una query con el nombre del fichero+número para verificar si hay más.
+            existing_file = db.query(File).filter(File.path == new_file_name).first()
+            counter += 1
+
+        file_path = os.path.join(UPLOAD_DIR, new_file_name)
+
+        # Guardar el archivo en el sistema de archivos
         with open(file_path, "wb") as buffer:
             buffer.write(await file.read())
 
-        # Obtiene el tamaño del fichero
-        file.file.seek(0, os.SEEK_END)  # Busca el final del fichero
-        file_size = file.file.tell()  # Obtiene la posición del puntero
+        # Obtener el tamaño del archivo
+        file_size = os.path.getsize(file_path)
 
-        # Crea registro del fichero en la BD
+        # Crear el registro del archivo en la base de datos
         newFile = File()
         newFile.size = file_size
-        newFile.path = file.filename
+        newFile.path = new_file_name
         newFile.date = datetime.datetime.now()
         mime_type, _ = mimetypes.guess_type(file_path)
-        newFile.type=mime_type
+        newFile.type = mime_type
         db.add(newFile)
         db.commit()
-        return ORJSONResponse(content={"filename": file.filename, "saved_path": file_path})
+
+        return ORJSONResponse(content={"filename": new_file_name, "saved_path": file_path})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error subiendo el archivo: {str(e)}")
 
