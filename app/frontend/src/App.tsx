@@ -18,7 +18,7 @@ import { ChatWindow } from './main/components/Chat/ChatWindow';
 import { About } from './main/components/About';
 import { Weather } from './main/components/Weather/Weather';
 import {CalendarMain} from './main/components/Calendar/CalendarMain';
-import { Profile } from './main/components/Profile/Profile';
+import { ProfileGeneral } from './main/components/Profile/ProfileGeneral';
 import LoginListMain from './main/components/WorkHours/Views/LoginListMain';
 
 
@@ -110,7 +110,7 @@ const global: any = () => {
 
        <Route path='/profile'>
         <SideBar/>
-        <Profile/>
+        <ProfileGeneral/>
        </Route>
 
        <Route path='/loginList'>

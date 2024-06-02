@@ -7,13 +7,17 @@ interface ProfileModalProps {
   setOtherProfileModal: React.Dispatch<React.SetStateAction<boolean>>;
   otherProfileModal: boolean;
   user: UserModel | null;
+  avatar:string;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
   setOtherProfileModal,
   otherProfileModal,
-  user
+  user,
+  avatar
 }) => {
+
+  const empty="Este es un espacio en el que nos cuentes un poco acerca de ti mismo. No seas tímido y permite que tus compañeros te conozcan"
 
   return (
     <Modal show={otherProfileModal} onHide={() => setOtherProfileModal(false)}>
@@ -25,14 +29,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           <>
             <div className="d-flex flex-column align-items-center text-center">
               <img
-                src={user.avatar ? user.avatar : unknown}
+                src={avatar ? avatar : unknown}
                 alt="Profile"
                 className="rounded-circle"
                 width="150"
               />
               <div className="mt-3">
                 <h4>{user.nombre}</h4>
-                <p className="text-secondary mb-1">{user.bio ? user.bio : "Sin biografía"}</p>
+                <p className="text-secondary mb-1">{user.bio == empty ?  "Sin biografía" : user.bio}</p>
                 <p className="text-muted font-size-sm">{user.email}</p>
               </div>
             </div>

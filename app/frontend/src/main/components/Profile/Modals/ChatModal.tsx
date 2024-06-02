@@ -1,6 +1,6 @@
 import { Modal, Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
-import { Message } from "../Profile";
+import { Message } from "../ProfileGeneral";
 import { nanoid } from "nanoid";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { getNombre, userId } from "../../Login/TokenHandler";

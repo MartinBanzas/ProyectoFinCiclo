@@ -26,7 +26,7 @@ export interface UserAndAvatar {
   avatar: string;
 }
 
-export const Profile = () => {
+export const ProfileGeneral = () => {
   const [selectedUser, setSelectedUser] = React.useState<UserModel>();
   const [otherProfileModal, setOtherProfileModal] = React.useState(false);
   const [mainUser, setMainUser] = React.useState<UserModel>();
@@ -296,50 +296,9 @@ export const Profile = () => {
           </div>
           <div className="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
             <div className="nav-wrapper position-relative end-0">
-              <ul className="nav nav-pills nav-fill p-1" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className="nav-link mb-0 px-0 py-1 active "
-                    data-bs-toggle="tab"
-                    href=""
-                    role="tab"
-                    aria-selected="true"
-                  >
-                    <i className="material-icons text-lg position-relative">
-                      home
-                    </i>
-                    <span className="ms-1">App</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link mb-0 px-0 py-1 "
-                    data-bs-toggle="tab"
-                    href=""
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="material-icons text-lg position-relative">
-                      email
-                    </i>
-                    <span className="ms-1">Mensajes</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link mb-0 px-0 py-1 "
-                    data-bs-toggle="tab"
-                    href=""
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="material-icons text-lg position-relative">
-                      settings
-                    </i>
-                    <span className="ms-1">Configuración</span>
-                  </a>
-                </li>
-              </ul>
+           
+           
+              
             </div>
           </div>
         </div>
@@ -516,11 +475,13 @@ export const Profile = () => {
     avatarSender={imageUrl}
     avatarReceiver={userImageUrls[selectedUser.id!]}
   /> : null }
+  {selectedUser ?
       <ProfileModal
         setOtherProfileModal={setOtherProfileModal}
         otherProfileModal={otherProfileModal}
         user={selectedUser || null}
-      />
+        avatar={userImageUrls[selectedUser.id!]}
+      /> : null }
       <AvatarModal
         setAvatarModal={setAvatarModal}
         avatarModal={avatarModal}
