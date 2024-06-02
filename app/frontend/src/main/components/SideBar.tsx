@@ -24,6 +24,9 @@ return (
 
 
       <hr className="horizontal light mt-0 mb-2"/>
+      <li className="nav-item mt-3">
+              <h6 className="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">General</h6>
+            </li>
 
         <div className="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
           <ul className="navbar-nav">
@@ -120,6 +123,7 @@ return (
                   <i className="material-icons opacity-10">person</i>
                 </div>
 
+
                 <span className="nav-link-text ms-1">Mi perfil</span>
               </Link>
             </li>
@@ -138,13 +142,18 @@ return (
               </a>
             </li>
 
+            <li className="nav-item mt-3">
+              <h6 className="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Otros</h6>
+            </li>
 
             <li className="nav-item">
+
             <Link className="nav-link text-white " to="./about">
 
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i className="material-icons opacity-10">assignment</i>
                 </div>
+
 
                 <span className="nav-link-text ms-1">Acerca de</span>
               </Link>

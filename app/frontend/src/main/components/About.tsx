@@ -9,7 +9,7 @@ export const About = () => {
         <div className="mt-5 text-start px-5">
           <p className="fs-5">
             Empecé este proyecto para practicar React. Fue creciendo y se ha
-            convertido en lo que espero que sea mi proyecto de fin de ciclo.
+            convertido en mi proyecto de fin de ciclo.
             Utiliza las siguientes librerías y componentes:
           </p>
           <ul className="list-unstyled mt-4">
