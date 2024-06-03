@@ -14,7 +14,6 @@ import './assets/css/nucleo-icons.css'
 import './assets/css/nucleo-svg.css'
 import './assets/css/material-dashboard.css'
 import './assets/css/main.css'
-import { ChatWindow } from './main/components/Chat/ChatWindow';
 import { About } from './main/components/About';
 import { Weather } from './main/components/Weather/Weather';
 import {CalendarMain} from './main/components/Calendar/CalendarMain';
@@ -93,10 +92,7 @@ const global: any = () => {
           <Login />
         </Route>
 
-        <Route path='/messages'>
-         <SideBar/>
-          <ChatWindow/>
-        </Route>
+      
 
         <Route path='/about'>
         <SideBar/>

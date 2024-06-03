@@ -10,6 +10,7 @@ COPY package-lock.json ./
 # Install dependencies
 RUN npm install
 RUN npm install react-scripts@3.4.1 -g --silent
+RUN npm install -g serve
 
 # Copy the rest of the application
 COPY . ./
@@ -21,4 +22,4 @@ RUN npm run build
 EXPOSE 3000 80
 
 # Command to run the application
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build", "-l", "80"]

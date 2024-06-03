@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import logo from '../../assets/img/logos/logo-empresa.png'
+import { azure_frontend } from '../urls';
 
 
 export const SideBar = () => {
@@ -8,7 +9,7 @@ export const SideBar = () => {
   const handleLogout = () => {
       localStorage.removeItem("token");
       //localStorage.removeItem("")
-      window.location.href = "http://localhost:3000/login";
+      window.location.href = `${azure_frontend}login`;
   }
 
 return (

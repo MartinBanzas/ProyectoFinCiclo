@@ -3,6 +3,7 @@ import FileModel from "../../../models/FicheroModel";
 import { formatFecha, formatSize, getImg } from "./utils/Utils";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { ContextMenu } from "./ContextMenu";
+import { azure_backend } from "../../urls";
 
 export const FilesTable = () => {
   const [ficheros, setFicheros] = useState<FileModel[]>([]);
@@ -79,7 +80,7 @@ export const FilesTable = () => {
 
       try {
       
-        const response = await fetch("http://localhost:5000/drive/new/upload", {
+        const response = await fetch(`${azure_backend}drive/new/upload`, {
           headers: {
             'Access-Control-Allow-Origin':'*'
           },
@@ -109,7 +110,7 @@ export const FilesTable = () => {
 
   //Fetch data for the file table
   const initialFilesFetch = useCallback(async () => {
-    const baseUrl: string = "http://localhost:5000/drive/files";
+    const baseUrl: string = `${azure_backend}drive/files`;
     const url: string = `${baseUrl}`;
 
     try {
@@ -154,7 +155,7 @@ export const FilesTable = () => {
   }
   const ficherosDestacados = ficheros.slice(-3);
   //Base url for downloads
-  const baseUrl = "http://localhost:5000/drive";
+  const baseUrl = `${azure_backend}drive`;
 
   return (
     <div className="container-md text-center bg-white mt-6 rounded">

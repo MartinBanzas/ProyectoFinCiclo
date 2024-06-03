@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import img from "../../../assets/img/illustrations/illustration-signup2.jpg";
 import './extra.css'
 import { FormValidation } from "./FormValidation";
+import { azure_frontend, azure_backend } from "../../urls";
 export const Register = () => {
   // // style="background-image: url('../assets/img/illustrations/illustration-signup.jpg'); background-size: cover;">
 
@@ -50,7 +51,7 @@ export const Register = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/addUser", {
+      const response = await fetch(`${azure_backend}addUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +62,7 @@ export const Register = () => {
       if (response.ok) {
         const responseBody = await response.text();
 
-        window.location.href = "http://localhost:3000";
+        window.location.href = azure_frontend;
       } else {
         console.log(response);
         console.error("Fracaso en el registro");

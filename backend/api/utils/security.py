@@ -25,5 +25,5 @@ def create_token(*, data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(days=30)
     to_encode.update({"exp": int(expire.timestamp() * 1000)})  # Hay que multiplicar por 1000 para desplazar la coma 3 cifras a la derecha
-    encoded_jwt = jwt.encode(to_encode, "asjkdfhasgh", algorithm="HS256")  # Solo dos argumentos aquí
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")  # Solo dos argumentos aquí
     return encoded_jwt

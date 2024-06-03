@@ -1,5 +1,6 @@
 import { getNombre } from "../../../Login/TokenHandler";
 import UserModel from "../../../../../models/UserModel";
+import { azure_backend } from "../../../../urls";
 
 const nombre = getNombre;
 
@@ -21,7 +22,7 @@ export const handleNewMaximumScore = (score: number, playerList: UserModel[]) =>
 
   
   if (compareScore(score, playerList)) {
-    const apiUrl = 'http://localhost:5000/tetris/highScore';  // Reemplaza con la URL de tu recurso específico
+    const apiUrl = `${azure_backend}tetris/highScore`;  // Reemplaza con la URL de tu recurso específico
     const newData = {
       nombre: nombre,
       puntuacion: score

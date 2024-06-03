@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import logo from "../../../assets/img/logos/logo-empresa.png";
 import bg from "../../../assets/img/login-bg.jpg";
+import { azure_frontend, azure_backend } from "../../urls";
 
 export const Login = () => {
   const [email, setEmail] = React.useState("");
@@ -28,7 +29,7 @@ export const Login = () => {
       };
 
       try {
-        const response = await fetch("http://localhost:5000/login", {
+        const response = await fetch(`${azure_backend}login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -40,7 +41,7 @@ export const Login = () => {
           const responseBody = await response.text();
           console.log(responseBody);
           localStorage.setItem("token", responseBody);
-          window.location.href = "http://localhost:3000/home";
+          window.location.href = azure_frontend;
         } else {
           console.log(response);
           console.error("Fracaso en el logeo");

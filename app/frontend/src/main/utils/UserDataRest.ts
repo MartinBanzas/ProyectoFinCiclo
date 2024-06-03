@@ -1,8 +1,9 @@
 import UserModel from "../../models/UserModel";
+import { azure_backend } from "../urls";
 
 
 export const get_all_users = async () => {
-    const baseUrl: string = "http://localhost:5000/get_users";
+    const baseUrl: string = `${azure_backend}get_users`;
     const bioDefault="Este es un espacio en el que nos cuentes un poco acerca de ti mismo. No seas tímido y permite que tus compañeros te conozcan";
 
     try {

@@ -11,6 +11,7 @@ import { EditModal } from "./Modals/EditModal";
 import { AvatarModal } from "./Modals/AvatarModal";
 import unknown from "../../../assets/icons/User_icon.png";
 import { ProfileModal } from "./Modals/ProfileModal";
+import { azure_backend } from "../../urls";
 
 
 export interface Message {
@@ -62,7 +63,7 @@ export const ProfileGeneral = () => {
         console.log(inputPhone);
 
         const response = await fetch(
-          `http://localhost:5000/auth/updateUserData/${userId}`,
+          `${azure_backend}auth/updateUserData/${userId}`,
           {
             method: "PATCH",
             headers: {
@@ -94,7 +95,7 @@ export const ProfileGeneral = () => {
       try {
         console.log(userId);
         const response = await fetch(
-          `http://localhost:5000/drive/avatar/${userId}`,
+          `${azure_backend}drive/avatar/${userId}`,
           {
             method: "POST",
             body: formData,
@@ -201,7 +202,7 @@ export const ProfileGeneral = () => {
   const fetchImage = async (id: Number) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/drive/get/avatar/${id}`,
+        `${azure_backend}drive/get/avatar/${id}`,
         {
           method: "GET",
         }
@@ -261,6 +262,7 @@ export const ProfileGeneral = () => {
   };
 
   console.log(roles)
+  console.log(getNombre)
   
 
   return isReady ? (

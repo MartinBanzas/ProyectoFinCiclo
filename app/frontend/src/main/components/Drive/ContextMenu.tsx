@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { ModalRename } from "./utils/ModalRename";
+import { azure_backend } from "../../urls";
 
 export interface ContextMenuProps {
   id: string;
@@ -20,7 +21,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   const [newName, setNewName] = React.useState("");
 
   const handleFileDelete = async () => {
-    const response = await fetch(`http://localhost:5000/drive/delete/${id}`, {
+    const response = await fetch(`${azure_backend}/drive/delete/${id}`, {
       method: "DELETE",
     });
 
@@ -32,7 +33,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
 const handleFileRename = async () => {
   const response = await fetch(
-    `http://localhost:5000/drive/rename/${id}?new_name=${encodeURIComponent(newName)}`,
+    `${azure_backend}/drive/rename/${id}?new_name=${encodeURIComponent(newName)}`,
     {
       method: "PATCH",
     }

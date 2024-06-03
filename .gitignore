@@ -31,3 +31,4 @@ frontend/src/.env
 /backend/.venv
 /backend/venv
 /backend/api/uploads
+/app/frontend/build

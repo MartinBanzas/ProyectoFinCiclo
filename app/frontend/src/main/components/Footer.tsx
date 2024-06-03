@@ -38,12 +38,12 @@ export const Footer = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a href="" className={`nav-link ${getTextColor()}`} target="_blank" rel="noopener noreferrer">
+                <a href="https://x.com/MartinAJ312" className={`nav-link ${getTextColor()}`} target="_blank" rel="noopener noreferrer">
                   <img src={twitter} width="32px" height="32px" alt="Twitter" />
                 </a>
               </li>
               <li className="nav-item">
-                <a href="https://www.creative-tim.com/license" className={`nav-link pe-0 ${getTextColor()}`} target="_blank" rel="noopener noreferrer">
+                <a href="645872184" className={`nav-link pe-0 ${getTextColor()}`} target="_blank" rel="noopener noreferrer">
                   <img src={whatsapp} width="32px" height="32px" alt="WhatsApp" />
                 </a>
               </li>

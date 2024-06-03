@@ -15,7 +15,7 @@ const standard = () => {
 }
 
 const LoginListMain = () => {
-   return roles == "ROLE_ADMIN" ? admin() : standard()
+   return roles ? admin() : standard()
 }
 
 export default LoginListMain;
