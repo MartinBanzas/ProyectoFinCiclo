@@ -2,13 +2,14 @@
 
 
 
-Actualmente tiene:
 
-#-Subida de archivos al estilo Google drive, usando API REST.
-#-Notas usando React Beautiful DnD y Firestore.
-#-Tetris con tabla de clasificaciones usandoapi REST y música, para cuándo apetezca relajarse en la oficina!
-#-Calculadora y tasas conversión de monedas usando la api de Frankfurter.
-#-Calendario con notificaciones al móvil.
-#-Chat usando componentes de React, api REST y Firestore.
 
-De momento ambas partes se despliegan en local, backend con servidor Uvicorn y frontend en el servidor de pruebas de React. La idea es subir ambos en contenedores a Azure.
+-Subida de archivos al estilo Google drive, usando API REST.
+-Notas usando React Beautiful DnD y Firestore.
+-Tetris con tabla de clasificaciones usando API REST y música, para cuándo apetezca relajarse en la oficina!
+-Calculadora y tasas conversión de monedas usando la API de Frankfurter.
+-Calendario con notificaciones al móvil.
+-Chat usando componentes de React, API REST y Firestore.
+-Todo el frontend realizado en React.
+
+Despliega tanto a Docker.
